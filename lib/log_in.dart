@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:helloworld/admin.dart';
-import 'package:helloworld/student.dart';
-import 'Register.dart';
+import 'package:mobile_app/sign_up.dart';
+// import 'package:helloworld/admin.dart';
+// import 'package:helloworld/student.dart';
+// import 'Register.dart';
 
 class Login extends StatefulWidget {
+  
   const Login({super.key});
 
   @override
@@ -22,10 +24,6 @@ class _LoginState extends State<Login> {
 
     if (username == 'user' && password == 'user123') {
       Future.delayed(Duration(seconds: 1), () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const UserPage()),
-        );
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -44,10 +42,7 @@ class _LoginState extends State<Login> {
         ),
       );
       Future.delayed(Duration(seconds: 1), () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AdminPage()),
-        );
+        
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -159,7 +154,7 @@ class _LoginState extends State<Login> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Register(),
+                          builder: (context) => const SignUpPage(),
                         ),
                       );
                     },
