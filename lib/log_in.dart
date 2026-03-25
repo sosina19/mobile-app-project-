@@ -5,7 +5,6 @@ import 'package:mobile_app/sign_up.dart';
 // import 'Register.dart';
 
 class Login extends StatefulWidget {
-  
   const Login({super.key});
 
   @override
@@ -14,6 +13,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   // Controllers for TextFields
+
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -23,8 +23,7 @@ class _LoginState extends State<Login> {
     String password = passwordController.text.trim();
 
     if (username == 'user' && password == 'user123') {
-      Future.delayed(Duration(seconds: 1), () {
-      });
+      Future.delayed(Duration(seconds: 1), () {});
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -41,9 +40,7 @@ class _LoginState extends State<Login> {
           duration: Duration(seconds: 1),
         ),
       );
-      Future.delayed(Duration(seconds: 1), () {
-        
-      });
+      Future.delayed(Duration(seconds: 1), () {});
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -68,107 +65,113 @@ class _LoginState extends State<Login> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: SingleChildScrollView(
-          // prevents overflow on small screens
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 60),
-              Text(
-                'Login',
-                style: TextStyle(
-                  fontSize: 40,
-                  color: Color(0xff0f0e0e),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 100),
-
-              // Username Field
-              TextField(
-                controller: usernameController,
-                decoration: InputDecoration(
-                  labelText: "Username",
-                  hintText: "Enter your Username",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  prefixIcon: Icon(Icons.person),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // Password Field
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  hintText: "Enter Your Password",
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-              ),
-              SizedBox(height: 40),
-
-              // Login Button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  elevation: 10,
-                  shadowColor: Colors.black,
-                  backgroundColor: Color.fromARGB(255, 92, 146, 245),
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: login,
-                child: Text(
-                  'Login',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 80),
-
-              // Sign Up Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+      body: Center(
+        child: SizedBox(
+          width: 400,
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(height: 60),
                   Text(
-                    "Don't have an Account?",
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                    'Login',
+                    style: TextStyle(
+                      fontSize: 40,
+                      color: Color(0xff0f0e0e),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  SizedBox(width: 10),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpPage(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Sign up",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 20,
+                  SizedBox(height: 100),
+
+                  // Username Field
+                  TextField(
+                    controller: usernameController,
+                    decoration: InputDecoration(
+                      labelText: "Username",
+                      hintText: "Enter your Username",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Password Field
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: "Password",
+                      hintText: "Enter Your Password",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.lock),
+                    ),
+                  ),
+                  SizedBox(height: 40),
+
+                  // Login Button
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 10,
+                      shadowColor: Colors.black,
+                      backgroundColor: Color.fromARGB(255, 92, 146, 245),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 20,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
                       ),
                     ),
-                  )
+                    onPressed: login,
+                    child: Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 80),
+
+                  // Sign Up Link
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an Account?",
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SignUpPage(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Sign up",
+                          style: TextStyle(color: Colors.blue, fontSize: 20),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),

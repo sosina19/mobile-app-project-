@@ -36,16 +36,16 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController phoneController = TextEditingController();
 
   @override
-void dispose() {
-  nameController.dispose();
-  emailController.dispose();
-  passwordController.dispose();
-  confirmPasswordController.dispose();
-  studentIdController.dispose();
-  departmentController.dispose();
-  phoneController.dispose();
-  super.dispose();
-}
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    studentIdController.dispose();
+    departmentController.dispose();
+    phoneController.dispose();
+    super.dispose();
+  }
 
   bool showPassword = false;
   bool showConfirmPassword = false;
@@ -54,226 +54,243 @@ void dispose() {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: Center(
+        child: SizedBox(
+          width: 400, // 👈 controls the width
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
 
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 60),
 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 60),
-
-                const Text(
-                  "Your journey starts here\nTake the first step",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Full Name
-                TextFormField(
-                  controller: nameController,
-                  decoration: inputStyle("Full Name", Icons.person),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter name";
-                    }
-                    if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
-                      return "Name should contain letters only";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 15),
-
-                // Email
-                TextFormField(
-                  controller: emailController,
-                  decoration: inputStyle("Email", Icons.email),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter email";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 15),
-
-                // Password
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: !showPassword,
-                  decoration: inputStyle("Password", Icons.lock).copyWith(
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        showPassword ? Icons.visibility : Icons.visibility_off,
+                    const Text(
+                      "Your journey starts here\nTake the first step",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          showPassword = !showPassword;
-                        });
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // Full Name
+                    TextFormField(
+                      controller: nameController,
+                      decoration: inputStyle("Full Name", Icons.person),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter name";
+                        }
+                        if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
+                          return "Name should contain letters only";
+                        }
+                        return null;
                       },
                     ),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Please enter password";
-                    }
 
-                    if (value.length < 8) {
-                      return "Password must be at least 8 characters";
-                    }
+                    const SizedBox(height: 15),
 
-                    if (!RegExp(
-                      r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$',
-                    ).hasMatch(value)) {
-                      return "Use letters, numbers & special characters";
-                    }
+                    // Email
+                    TextFormField(
+                      controller: emailController,
+                      decoration: inputStyle("Email", Icons.email),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter email";
+                        }
+                        return null;
+                      },
+                    ),
 
-                    return null;
-                  },
-                ),
+                    const SizedBox(height: 15),
 
-                const SizedBox(height: 15),
-
-                // Confirm Password
-                TextFormField(
-                  controller: confirmPasswordController,
-                  obscureText: !showConfirmPassword,
-                  decoration: inputStyle("Confirm Password", Icons.lock)
-                      .copyWith(
+                    // Password
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: !showPassword,
+                      decoration: inputStyle("Password", Icons.lock).copyWith(
                         suffixIcon: IconButton(
                           icon: Icon(
-                            showConfirmPassword
+                            showPassword
                                 ? Icons.visibility
                                 : Icons.visibility_off,
                           ),
                           onPressed: () {
                             setState(() {
-                              showConfirmPassword = !showConfirmPassword;
+                              showPassword = !showPassword;
                             });
                           },
                         ),
                       ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Confirm your password";
-                      }
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Please enter password";
+                        }
 
-                    if (value != passwordController.text) {
-                      return "Passwords do not match";
-                    }
-                    return null;
-                  },
-                ),
+                        if (value.length < 8) {
+                          return "Password must be at least 8 characters";
+                        }
 
-                const SizedBox(height: 15),
+                        if (!RegExp(
+                          r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$',
+                        ).hasMatch(value)) {
+                          return "Use letters, numbers & special characters";
+                        }
 
-// Student ID
-TextFormField(
-  controller: studentIdController,
-  decoration: inputStyle("Student ID", Icons.badge),
-  validator: (value) {
-    if (value == null || value.isEmpty) {
-      return "Enter student ID";
-    }
-
-
-    return null;
-  },
-),
-
-                const SizedBox(height: 15),
-
-                // Department
-                TextFormField(
-                  controller: departmentController,
-                  decoration: inputStyle("Department", Icons.apartment),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter department";
-                    }
-                    if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
-                      return "Department should contain letters only";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 15),
-
-                // Phone
-                TextFormField(
-                  controller: phoneController,
-                  decoration: inputStyle("Phone Number", Icons.phone),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Enter phone number";
-                    }
-                    return null;
-                  },
-                ),
-
-                const SizedBox(height: 30),
-
-                // Sign Up Button
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Login(),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF738973),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 12,
+                        return null;
+                      },
                     ),
-                  ),
-                  child: const Text("Sign up"),
-                ),
 
-                const SizedBox(height: 20),
+                    const SizedBox(height: 15),
 
-                Row(
-                   mainAxisAlignment: MainAxisAlignment.center,
-                   children: [
-                      const Text(
-                   "Already have an account? ",
-                     style: TextStyle(color: Colors.black),
-                         ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Login(),
+                    // Confirm Password
+                    TextFormField(
+                      controller: confirmPasswordController,
+                      obscureText: !showConfirmPassword,
+                      decoration: inputStyle("Confirm Password", Icons.lock)
+                          .copyWith(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                showConfirmPassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  showConfirmPassword = !showConfirmPassword;
+                                });
+                              },
+                            ),
+                          ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Confirm your password";
+                        }
+
+                        if (value != passwordController.text) {
+                          return "Passwords do not match";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // Student ID
+                    TextFormField(
+                      controller: studentIdController,
+                      decoration: inputStyle("Student ID", Icons.badge),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter student ID";
+                        }
+
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // Department
+                    TextFormField(
+                      controller: departmentController,
+                      decoration: inputStyle("Department", Icons.apartment),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter department";
+                        }
+                        if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(value)) {
+                          return "Department should contain letters only";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
+
+                    // Phone
+                    TextFormField(
+                      controller: phoneController,
+                      decoration: inputStyle("Phone Number", Icons.phone),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return "Enter phone number";
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // Sign Up Button
+                    ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => Login()),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF738973),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 30,
+                          vertical: 12,
+                        ),
                       ),
-                    );
-                  },
-                  child: const Text(
-                    "Sign in",
-                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-                  ),
+                      child: const Text("Sign up"),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Already have an account? ",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Sign in",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            ],
           ),
         ),
-      ),
       ),
     );
   }
@@ -291,4 +308,4 @@ TextFormField(
       ),
     );
   }
-}  
+}

@@ -7,8 +7,11 @@ class Welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SizedBox(
+          width: 350,
+
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -75,6 +78,8 @@ class Welcome extends StatelessWidget {
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
