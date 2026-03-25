@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/sign_up.dart';
+import 'package:mobile_app/signup/signup.dart';
 // import 'package:helloworld/admin.dart';
 // import 'package:helloworld/student.dart';
 // import 'Register.dart';
@@ -54,8 +54,9 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.grey[100],
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
@@ -64,7 +65,7 @@ class _LoginState extends State<Login> {
           },
         ),
       ),
-      backgroundColor: Colors.white,
+
       body: Center(
         child: SizedBox(
           width: 400,
@@ -90,7 +91,7 @@ class _LoginState extends State<Login> {
                     controller: usernameController,
                     decoration: InputDecoration(
                       labelText: "Username",
-                      hintText: "Enter your Username",
+
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -107,7 +108,7 @@ class _LoginState extends State<Login> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: "Password",
-                      hintText: "Enter Your Password",
+
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -158,7 +159,7 @@ class _LoginState extends State<Login> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const SignUpPage(),
+                              builder: (context) => const SignupPage(),
                             ),
                           );
                         },

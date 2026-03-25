@@ -1,5 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'log_in.dart';
+import '../log_in.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,19 +14,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SignUpPage(),
+      home: const studentsignup(),
     );
   }
 }
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class studentsignup extends StatefulWidget {
+  const studentsignup({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<studentsignup> createState() => _studentsignupState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _studentsignupState extends State<studentsignup> {
   final _formKey = GlobalKey<FormState>();
 
   TextEditingController nameController = TextEditingController();
@@ -54,14 +56,6 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
 
       body: Center(
         child: SizedBox(
@@ -83,6 +77,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
+                        color: Colors.blue,
                       ),
                     ),
 
@@ -248,7 +243,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF738973),
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 30,
                           vertical: 12,
@@ -276,7 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             );
                           },
                           child: const Text(
-                            "Sign in",
+                            "Log in",
                             style: TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,
