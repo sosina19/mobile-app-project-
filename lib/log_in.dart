@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/signup/signup.dart';
+import 'package:mobile_app/studentdashboard.dart';
+import 'package:mobile_app/teacher.dart';
 // import 'package:helloworld/admin.dart';
 // import 'package:helloworld/student.dart';
 // import 'Register.dart';
@@ -19,37 +21,33 @@ class _LoginState extends State<Login> {
 
   // Login logic
   void login() {
-    String username = usernameController.text.trim();
-    String password = passwordController.text.trim();
+  String username = usernameController.text.trim();
+  String password = passwordController.text.trim();
 
-    if (username == 'user' && password == 'user123') {
-      Future.delayed(Duration(seconds: 1), () {});
+  if (username == 'user' && password == 'user123') {
+    // Navigate automatically to Student Dashboard
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => StudentDashboard()),
+    );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Welcome User"),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 1),
-        ),
-      );
-    } else if (username == 'admin' && password == 'admin123') {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Welcome Admin"),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 1),
-        ),
-      );
-      Future.delayed(Duration(seconds: 1), () {});
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Invalid username or password"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+  } else if (username == 'admin' && password == 'admin123') {
+    // Navigate automatically to Teacher Dashboard
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => AdminPage()),
+    );
+
+  } else {
+    // Invalid credentials
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Invalid username or password"),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
