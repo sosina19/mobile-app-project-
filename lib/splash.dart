@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Wait 3 seconds then go to Welcome page
+  e
     Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -25,8 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ✅ Light background matching your theme
-      backgroundColor: Color(0xFFEFF3FB), // soft light blue
+     
+      backgroundColor: Color(0xFFEFF3FB),
 
       body: Center(
         child: Column(
