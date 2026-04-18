@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'log_in.dart';
+import 'login/log_in.dart';
 import 'signup/signup.dart';
 
 class Welcome extends StatelessWidget {
@@ -9,6 +9,7 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
+
       body: SafeArea(
         child: Center(
           child: SizedBox(
@@ -44,7 +45,7 @@ class Welcome extends StatelessWidget {
                           "DIRE DAWA",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue,
+                            color: const Color(0xFF1E4B7A),
                             fontSize: 16,
                           ),
                         ),
@@ -100,7 +101,7 @@ class Welcome extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Login()),
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
                       );
                     },
                     child: const Text(

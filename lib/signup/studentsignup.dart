@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import '../log_in.dart';
+import '../login/log_in.dart';
 
 void main() {
   runApp(const MyApp());
@@ -238,7 +238,7 @@ class _studentsignupState extends State<studentsignup> {
                         if (_formKey.currentState!.validate()) {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => Login()),
+                            MaterialPageRoute(builder: (context) => LoginPage()),
                           );
                         }
                       },
@@ -267,7 +267,7 @@ class _studentsignupState extends State<studentsignup> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const Login(),
+                                builder: (context) => const LoginPage(),
                               ),
                             );
                           },
