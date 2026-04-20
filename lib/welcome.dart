@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'RegisterPage.dart';
 import 'LoginPage.dart';
-import 'RegisterPage.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -10,144 +9,152 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: EdgeInsets.all(18),
+      body: Center(
         child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: 20),
-                Container(
-                  width: double.infinity, // 👈 gives full width
-                  child: Text.rich(
-                    TextSpan(
-                      text: "DIRE DAWA",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff204381),
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "\nUNIVERSITY",
-                          style: TextStyle(color: Color(0xff6b6b6b)),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.left, // try left / center / right
-                  ),
-                ),
-                SizedBox(height: 80),
-                Text.rich(
-                  TextSpan(
-                    text: '   \nWelcome to ',
-                    style: TextStyle(
-                      fontSize: 40,
-                      height: 1.2,
-                      letterSpacing: 0,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xff080808),
-                    ),
-                    children: [
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+
+              // DDU + ICON
+              Container(
+                width: double.infinity,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+              Icons.school,
+              color: Color(0xff204381),
+              size: 30,
+            ),
+
+      SizedBox(width: 8),
+                    Text.rich(
                       TextSpan(
-                        text: "DDU",
+                        text: "DIRE DAWA",
                         style: TextStyle(
-                          height: 1,
-                          color: Color(0xff204381), // ✅ only this part is blue
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Color(0xff204381),
                         ),
+                        children: [
+                          TextSpan(
+                            text: "\nUNIVERSITY",
+                            style: TextStyle(color: Color(0xff6b6b6b)),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: " Attendance \nSystem",
-                        style: TextStyle(
-                          fontSize: 40,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xff080808),
-                        ),
-                      ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+
+                    SizedBox(width: 8),
+                  ],
                 ),
-                SizedBox(height: 40),
-                Text(
-                  'Access the university portal to \nmanege acadamic presence \nand schedual',
+              ),
+
+              SizedBox(height: 30),
+
+              // Welcome Text
+              Text.rich(
+                TextSpan(
+                  text: 'Welcome to ',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 29,
+                    height: 1.2,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xff6d6d6d),
-                    letterSpacing: 2,
+                    color: Color(0xff080808),
+                  ),
+                  children: [
+                    TextSpan(
+                      text: "DDU",
+                      style: TextStyle(
+                        color: Color(0xff204381),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: " \nAttendance System",
+                      style: TextStyle(
+                        fontSize: 29,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff080808),
+                      ),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              SizedBox(height: 10),
+
+              Text(
+                'Access the university portal to manage \nacademic presence and schedule',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff6d6d6d),
+                  letterSpacing: 2,
+                ),
+              ),
+
+              SizedBox(height: 30),
+
+              // LOGIN BUTTON
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(180, 60),
+                  elevation: 0,
+                  backgroundColor: Color(0xff204381),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  'Get Started',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                child: Text(
+                  'Login',
                   style: TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.bold,
                     fontSize: 20,
-                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
                   ),
                 ),
-                SizedBox(height: 30),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(300, 60),
-                    elevation: 0,
-                    shadowColor: Colors.black,
-                    backgroundColor: const Color(0xff204381),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
-                  },
-                  child: Text(
-                    'Login ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                      fontFamily: 'Arial',
-                    ),
+              ),
+
+              SizedBox(height: 10),
+
+              // REGISTER BUTTON
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(180, 60),
+                  elevation: 0,
+                  backgroundColor: Color(0xffd4d2d2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(300, 60),
-                    elevation: 0,
-                    shadowColor: Colors.black,
-                    backgroundColor: const Color(0xffd4d2d2),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => RegisterPage()),
-                    );
-                  },
-                  child: Text(
-                    'Creat Account',
-                    style: TextStyle(
-                      color: const Color(0xff204381),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0,
-                      fontFamily: 'Arial',
-                    ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                },
+                child: Text(
+                  'Create Account',
+                  style: TextStyle(
+                    color: Color(0xff204381),
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
