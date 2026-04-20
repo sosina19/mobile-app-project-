@@ -1,11 +1,9 @@
-import 'package:mobile_app/splash.dart';
-
-import 'splash.dart';
-
 import 'package:flutter/material.dart';
+import 'welcome.dart';
+import 'RegisterPage.dart';
 
-void main() {
-  runApp(const MyApp()); // run the root app, not Login directly
+void main() async {
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -15,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const Splash(), // start app with Login page
+      home: const Welcome(),
     );
   }
 }

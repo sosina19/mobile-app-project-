@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'login/log_in.dart';
-import 'signup/signup.dart';
+import 'RegisterPage.dart';
+import 'LoginPage.dart';
+import 'RegisterPage.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -8,138 +9,148 @@ class Welcome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6F8),
-
-      body: SafeArea(
-        child: Center(
-          child: SizedBox(
-            width: 400,
-
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: EdgeInsets.all(18),
+        child: SingleChildScrollView(
+          child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                
-                // TOP LOGO SECTION
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color:  Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity, // 👈 gives full width
+                  child: Text.rich(
+                    TextSpan(
+                      text: "DIRE DAWA",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xff204381),
                       ),
-                      child: const Icon(
-                        Icons.school,
-                        color: Color(0xFF1E4B7A),
-                        size: 30,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "DIRE DAWA",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E4B7A),
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "UNIVERSITY",
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 14,
-                          ),
+                        TextSpan(
+                          text: "\nUNIVERSITY",
+                          style: TextStyle(color: Color(0xff6b6b6b)),
                         ),
                       ],
-                    )
-                  ],
-                ),
-
-                const SizedBox(height: 60),
-
-                // TITLE
-                const Text(
-                  "Welcome to DDU Attendance System",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-
-                // DESCRIPTION
-                const Text(
-                  "Access the university portal to manage academic presence and schedules.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14,
-                  ),
-                ),
-
-              const SizedBox(height: 50),
-
-// LOGIN BUTTON
-                SizedBox(
-                  height: 50,
-                  width: 180,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF1E4B7A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const LoginPage()),
-                      );
-                    },
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
+                    textAlign: TextAlign.left, // try left / center / right
                   ),
                 ),
-
-                const SizedBox(height: 15),
-
-                // CREATE ACCOUNT BUTTON
-                SizedBox(
-                  width: 180,
-                  height: 50,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                SizedBox(height: 80),
+                Text.rich(
+                  TextSpan(
+                    text: '   \nWelcome to ',
+                    style: TextStyle(
+                      fontSize: 40,
+                      height: 1.2,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xff080808),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SignupPage()),
-                      );
-                    },
-                    child: const Text("Create Account"),
-                  ),
-                ),
-                                  
-                                
-                              ],
-                            ),
-                          ),
+                    children: [
+                      TextSpan(
+                        text: "DDU",
+                        style: TextStyle(
+                          height: 1,
+                          color: Color(0xff204381), // ✅ only this part is blue
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
+                      TextSpan(
+                        text: " Attendance \nSystem",
+                        style: TextStyle(
+                          fontSize: 40,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff080808),
+                        ),
                       ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 40),
+                Text(
+                  'Access the university portal to \nmanege acadamic presence \nand schedual',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xff6d6d6d),
+                    letterSpacing: 2,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Get Started',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(300, 60),
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    backgroundColor: const Color(0xff204381),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
                     );
-                  }
-                }
+                  },
+                  child: Text(
+                    'Login ',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                      fontFamily: 'Arial',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(300, 60),
+                    elevation: 0,
+                    shadowColor: Colors.black,
+                    backgroundColor: const Color(0xffd4d2d2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RegisterPage()),
+                    );
+                  },
+                  child: Text(
+                    'Creat Account',
+                    style: TextStyle(
+                      color: const Color(0xff204381),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0,
+                      fontFamily: 'Arial',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
