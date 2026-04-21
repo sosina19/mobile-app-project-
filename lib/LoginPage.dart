@@ -67,21 +67,42 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.white, title: const Text("")),
       backgroundColor: Colors.white,
-      body: Padding(
+      body: Center(
+        child:SizedBox(
+        width: 400,
+        child:Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(height: 40),
+
+      // School Icon
+      const Icon(
+        Icons.school,
+        size: 40,
+        color: Color(0xff204381),
+      ),
+        const SizedBox(height: 20),
               Text(
-                "Login",
+                "DIREDAWA UNIVERSITY",
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 29,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black),
+                    color:Color(0xff204381)),
+                    textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: 10,
               ),
+              Text(
+           "portal access for students and faculity \nmembers",
+           style:TextStyle(
+                    fontSize: 15,
+                    color:Colors.grey),
+                    textAlign: TextAlign.center,
+                    ),
+                     const SizedBox(height: 20),
               Container(
                   child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -129,11 +150,11 @@ class _LoginPageState extends State<LoginPage> {
               )),
               const SizedBox(height: 20),
               SizedBox(
-                width: double.infinity,
+                width: 180,
                 height: 55,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(300, 60),
+                    minimumSize: Size(180, 60),
                     elevation: 0,
                     shadowColor: Colors.black,
                     backgroundColor: const Color(0xff204381),
@@ -156,6 +177,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
+        ),
+      ),
         ),
       ),
     );

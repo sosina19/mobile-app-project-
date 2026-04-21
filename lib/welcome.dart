@@ -9,7 +9,8 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F3F5),
-      body: SafeArea(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
 
@@ -18,7 +19,7 @@ class Welcome extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30),
               
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                  Container(
               padding: EdgeInsets.all(8),
