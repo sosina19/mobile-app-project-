@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile_app/RegisterPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 
@@ -173,8 +174,33 @@ class _LoginPageState extends State<LoginPage> {
                       fontFamily: 'Arial',
                     ),
                   ),
+                  
                 ),
               ),
+              const SizedBox(height: 20),
+                Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account? "),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterPage(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Color(0xFF1E4B7A),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
             ],
           ),
         ),
