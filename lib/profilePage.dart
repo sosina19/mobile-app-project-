@@ -157,6 +157,34 @@ class _profilePageState extends State<profilePage> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 20),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    width: 350,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Department:",
+                          style: TextStyle(
+                            color: Color(0xff9d9d9d),
+                            fontSize: 15,
+                          ),
+                        ),
+                        Text(
+                          "${userData!['department']}",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
