@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/RegisterPage.dart';
+import 'package:mobile_app/studentsignup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'HomePage.dart';
 
@@ -66,8 +67,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, title: const Text("")),
-      backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: const Color(0xFFF2F3F5), title: const Text("")),
+      backgroundColor: const Color(0xFFF2F3F5),
       body: Center(
         child:SizedBox(
         width: 400,
@@ -181,13 +182,17 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Don't have an account? "),
+                          const Text("Don't have an account? ",
+                          style: TextStyle(
+                            
+                            color: Color.fromARGB(255, 124, 123, 123),
+                          ),),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RegisterPage(),
+                                  builder: (context) => const SignUpPage(),
                                 ),
                               );
                             },
