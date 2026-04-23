@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:convert'; // for json encoding and decoding
+import 'dart:async'; // for Timer
+import 'package:http/http.dart' as http;
 
 class TeacherSignupPage extends StatefulWidget {
   const TeacherSignupPage({super.key});
@@ -28,29 +31,65 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
       ),
     );
   }
-
-  // ✅ FAKE SIGNUP (FIREBASE REMOVED)
+ //teacher account with validation and API call
   Future<void> createTeacherAccount() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
-    // fake delay instead of Firebase call
-    await Future.delayed(const Duration(seconds: 2));
+  final url = Uri.parse("http://10.0.2.2:3000/admin/create-teacher");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Account created successfully!"),
-        backgroundColor: Colors.green,
-      ),
+  try {
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "fullName": fullNameController.text.trim(),
+        "email": emailController.text.trim(),
+        "password": passwordController.text.trim(),
+        "phone": phoneController.text.trim(),
+        "role": "teacher"
+      }),
     );
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Teacher saved to database"),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // clear fields after success
+      fullNameController.clear();
+      emailController.clear();
+      passwordController.clear();
+      confirmController.clear();
+      phoneController.clear();
+    } else {
+      final error = jsonDecode(response.body);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error["message"].toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Server error: $e"),
+      ),
+    );
   }
+
+  setState(() {
+    _isLoading = false;
+  });
+}
 
   @override
   void dispose() {

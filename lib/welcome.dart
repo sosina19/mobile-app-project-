@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/signup/studentsignup.dart';
 import 'login/log_in.dart';
-import 'signup/signup.dart';
+import 'signup/studentsignup.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -126,7 +127,7 @@ class Welcome extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const SignupPage()),
+                        MaterialPageRoute(builder: (context) => const Studentsignup()),
                       );
                     },
                     child: const Text("Create Account"),

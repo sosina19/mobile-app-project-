@@ -1,6 +1,14 @@
+import 'dart:convert'; // for json encoding and decoding
+import 'dart:async'; // for Timer
+import 'package:http/http.dart' as http;
+import 'package:mobile_app/signup/studentsignup.dart';
+import 'package:mobile_app/studentdashboard.dart';
+import 'package:mobile_app/teacherdashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'forgetpass.dart';
-import '../signup/signup.dart';
+import '../signup/studentsignup.dart';
+import 'package:mobile_app/admin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // SIMPLE LOGIN FUNCTION (NO FIREBASE)
+  // ================= LOGIN FUNCTION =================
   Future<void> loginUser() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -33,18 +41,110 @@ class _LoginPageState extends State<LoginPage> {
       isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2)); // fake loading
+    final url = Uri.parse("http://10.0.2.2:3000/auth/login");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},// set content type to json
+        body: jsonEncode({// send email and password as json
+          "email": emailController.text.trim(),
+          "password": passwordController.text.trim(),
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body); // decode the response body
+
+        final token = data["token"];
+        final role = data["user"]["role"];
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("token", token); // save token to shared preferences
+        await prefs.setString("role", role);  // save role to shared preferences
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Login Successful")),
+        );
+
+        // ROLE BASED NAVIGATION
+        if (role == "admin") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const AdminHome()),
+          );
+        } else if (role == "teacher") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const TeacherDashboard()),
+          );
+        } else if (role == "student") {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const StudentDashboard()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Access Denied")),
+          );
+        }
+      } else {
+        final error = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error["message"].toString())),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
 
     setState(() {
       isLoading = false;
     });
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Login Successful")),
+  Widget label(String text) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1,
+          color: Colors.black54,
+        ),
+      ),
     );
+  }
 
-    // You can navigate later if you want
-    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+  Widget textField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: keyboardType,
+        validator: validator,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.grey),
+          hintText: hint,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -77,7 +177,6 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const SizedBox(height: 40),
 
-                      // logo
                       Container(
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
@@ -119,31 +218,14 @@ class _LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 40),
 
-                      // EMAIL LABEL
-                      const Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "UNIVERSITY EMAIL",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
+                      // EMAIL
+                      label("UNIVERSITY EMAIL"),
 
-                      const SizedBox(height: 8),
-
-                      // EMAIL FIELD
-                      TextFormField(
+                      textField(
                         controller: emailController,
+                        hint: "",
+                        icon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: "name@ddu.edu.et",
-                          prefixIcon: const Icon(Icons.email_outlined),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Email is required";
@@ -157,17 +239,11 @@ class _LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 20),
 
-                      // PASSWORD LABEL + FORGOT
+                      // PASSWORD HEADER
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            "PASSWORD",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
+                          label("PASSWORD"),
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -196,7 +272,7 @@ class _LoginPageState extends State<LoginPage> {
                         controller: passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          prefixIcon: const Icon(Icons.lock_outline),
+                          prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword
@@ -209,8 +285,11 @@ class _LoginPageState extends State<LoginPage> {
                               });
                             },
                           ),
+                          filled: true,
+                          fillColor: Colors.white,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
                           ),
                         ),
                         validator: (value) {
@@ -226,7 +305,6 @@ class _LoginPageState extends State<LoginPage> {
 
                       const SizedBox(height: 30),
 
-                      // SIGN IN BUTTON
                       SizedBox(
                         width: 180,
                         height: 50,
@@ -239,22 +317,16 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           onPressed: isLoading ? null : loginUser,
                           child: isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
+                              ? const CircularProgressIndicator(color: Colors.white)
                               : const Text(
                                   "Sign In",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
+                                  style: TextStyle(fontSize: 16, color: Colors.white),
                                 ),
                         ),
                       ),
 
                       const SizedBox(height: 25),
 
-                      // SIGN UP
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -264,7 +336,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SignupPage(),
+                                  builder: (context) => const Studentsignup(),
                                 ),
                               );
                             },
