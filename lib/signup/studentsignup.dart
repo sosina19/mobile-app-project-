@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; // for JSON encoding/decoding
-import 'package:http/http.dart' as http; // for making HTTP requests
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Studentsignup extends StatefulWidget {
   const Studentsignup({super.key});
@@ -36,35 +36,42 @@ class _StudentsignupState extends State<Studentsignup> {
     super.dispose();
   }
 
-  // sign up function with api call and data base integration
   Future<void> createStudentAccount() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (passwordController.text != confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Passwords do not match")),
+      );
       return;
     }
 
     setState(() => isLoading = true);
 
-    final url = Uri.parse("http://10.0.2.2:3000/auth/register");
+    final url = Uri.parse("https://s-backend-5f4c.onrender.com/users");
 
     try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({
-          "fullName": fullNameController.text.trim(),
-          "email": emailController.text.trim(),
-          "password": passwordController.text.trim(),
-          "studentId": studentIdController.text.trim(),
-          "phone": phoneController.text.trim(),
-          "department": selectedDepartment,
-          "role": "student",
-        }),
-      );
+      final response = await http
+          .post(
+            url,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "fullName": fullNameController.text.trim(),
+              "email": emailController.text.trim(),
+              "password": passwordController.text.trim(),
+              "studId": studentIdController.text.trim(),
+              "department": selectedDepartment ?? "",
+              "phoneNo": phoneController.text.trim(),
+              
+              
+            }),
+          )
+          .timeout(const Duration(seconds: 40));
+
+      print("STATUS: ${response.statusCode}");
+      print("BODY: ${response.body}");
+
+      if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -74,32 +81,32 @@ class _StudentsignupState extends State<Studentsignup> {
           ),
         );
 
-        // clear fields
         fullNameController.clear();
         emailController.clear();
         passwordController.clear();
         confirmPasswordController.clear();
         studentIdController.clear();
         phoneController.clear();
+
         setState(() => selectedDepartment = null);
 
-        Navigator.pop(context); // go back to login page
+        Navigator.pop(context);
       } else {
-        final error = jsonDecode(response.body);
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error["message"].toString()),
+            content: Text("Error: ${response.body}"),
             backgroundColor: Colors.red,
           ),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Server error: $e")));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Server error: $e")),
+      );
     }
 
+    if (!mounted) return;
     setState(() => isLoading = false);
   }
 
@@ -110,226 +117,229 @@ class _StudentsignupState extends State<Studentsignup> {
       body: Center(
         child: SizedBox(
           width: 400,
-          child: Column(
-            children: [
-              // TOP BAR
-              SafeArea(
-                child: Container(
-                  width: double.infinity,
-                  color: const Color(0xFF1E4B7A),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  // TOP BAR
+                  SafeArea(
+                    child: Container(
+                      width: double.infinity,
+                      color: const Color(0xFF1E4B7A),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          const Icon(
+                            Icons.school,
+                            color: Color.fromARGB(255, 204, 223, 240),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            "DDU Attendance System",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  child: Row(
+
+                  const SizedBox(height: 20),
+
+                  const Text(
+                    "Student Portal",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF111827),
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  const Text(
+                    "Join the academic community",
+                    style: TextStyle(fontSize: 15, color: Colors.grey),
+                  ),
+
+                  const SizedBox(height: 25),
+
+                  label("FULL NAME"),
+                  textField(
+                    controller: fullNameController,
+                    hint: "",
+                    icon: Icons.person_outline,
+                    validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  label("EMAIL"),
+                  textField(
+                    controller: emailController,
+                    hint: "",
+                    icon: Icons.email_outlined,
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return "Required";
+                      if (!v.contains("@")) return "Invalid email";
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            label("PASSWORD"),
+                            passwordField(
+                              controller: passwordController,
+                              isHidden: hidePassword,
+                              onTap: () {
+                                setState(() => hidePassword = !hidePassword);
+                              },
+                              validator: (v) {
+                                if (v == null || v.length < 6) {
+                                  return "Minimum 6 characters";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      const Icon(
-                        Icons.school,
-                        color: Color.fromARGB(255, 204, 223, 240),
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        "DDU Attendance System",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            label("CONFIRM"),
+                            passwordField(
+                              controller: confirmPasswordController,
+                              isHidden: hideConfirmPassword,
+                              onTap: () {
+                                setState(() => hideConfirmPassword = !hideConfirmPassword);
+                              },
+                              validator: (v) {
+                                if (v == null || v.isEmpty) return "Required";
+                                if (v != passwordController.text) return "No match";
+                                return null;
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
 
-              const Text(
-                "Student Portal",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF111827),
-                ),
-              ),
+                  const SizedBox(height: 20),
 
-              const SizedBox(height: 6),
+                  label("STUDENT ID"),
+                  textField(
+                    controller: studentIdController,
+                    hint: "",
+                    icon: Icons.badge,
+                    validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                  ),
 
-              const Text(
-                "Join the academic community",
-                style: TextStyle(fontSize: 15, color: Colors.grey),
-              ),
+                  const SizedBox(height: 20),
 
-              const SizedBox(height: 25),
+                  label("DEPARTMENT"),
+                  DropdownButtonFormField<String>(
+                    value: selectedDepartment,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.school),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: "software engineering",
+                        child: Text("Software Engineering"),
+                      ),
+                      DropdownMenuItem(value: "IT", child: Text("IT")),
+                      DropdownMenuItem(
+                        value: "computer science",
+                        child: Text("Computer Science"),
+                      ),
+                      DropdownMenuItem(
+                        value: "architecture",
+                        child: Text("Architecture"),
+                      ),
+                      DropdownMenuItem(
+                        value: "socialscience",
+                        child: Text("Social Science"),
+                      ),
+                      DropdownMenuItem(
+                        value: "electrical engineering",
+                        child: Text("Electrical Engineering"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Applied science",
+                        child: Text("Applied Science"),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() => selectedDepartment = value);
+                    },
+                    validator: (v) => v == null ? "Select department" : null,
+                  ),
 
-              label("FULL NAME"),
-              textField(
-                controller: fullNameController,
-                hint: "",
-                icon: Icons.person_outline,
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
-              ),
+                  const SizedBox(height: 20),
 
-              const SizedBox(height: 20),
+                  label("PHONE"),
+                  textField(
+                    controller: phoneController,
+                    hint: "",
+                    icon: Icons.phone_outlined,
+                    keyboardType: TextInputType.phone,
+                    validator: (v) => v == null || v.isEmpty ? "Required" : null,
+                  ),
 
-              label("EMAIL"),
-              textField(
-                controller: emailController,
-                hint: "",
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Required";
-                  if (!v.contains("@")) return "Invalid email";
-                  return null;
-                },
-              ),
+                  const SizedBox(height: 35),
 
-              const SizedBox(height: 20),
-
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        label("PASSWORD"),
-                        passwordField(
-                          controller: passwordController,
-                          isHidden: hidePassword,
-                          onTap: () {
-                            setState(() => hidePassword = !hidePassword);
-                          },
-                          validator: (v) {
-                            if (v == null || v.length < 6) {
-                              return "Minimum6 characters";
-                            }
-                            return null;
-                          },
+                  SizedBox(
+                    width: 180,
+                    height: 55,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF0D3B66),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
+                      ),
+                      onPressed: isLoading ? null : createStudentAccount,
+                      child: isLoading
+                          ? const CircularProgressIndicator(color: Colors.white)
+                          : const Text(
+                              "Create Account",
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        label("CONFIRM"),
-                        passwordField(
-                          controller: confirmPasswordController,
-                          isHidden: hideConfirmPassword,
-                          onTap: () {
-                            setState(
-                              () => hideConfirmPassword = !hideConfirmPassword,
-                            );
-                          },
-                          validator: (v) {
-                            if (v != passwordController.text) {
-                              return "No match";
-                            }
-                            return null;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
 
-              const SizedBox(height: 20),
+                  const SizedBox(height: 10),
 
-              label("STUDENT ID"),
-              textField(
-                controller: studentIdController,
-                hint: "",
-                icon: Icons.badge,
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
-              ),
-
-              const SizedBox(height: 20),
-
-              label("DEPARTMENT"),
-              DropdownButtonFormField<String>(
-                value: selectedDepartment,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.school),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                items: const [
-                  DropdownMenuItem(
-                    value: "software engineering",
-                    child: Text("software engineering"),
-                  ),
-                  DropdownMenuItem(value: "IT", child: Text("IT")),
-                  DropdownMenuItem(
-                    value: "computer science",
-                    child: Text("Computer Science"),
-                  ),
-                  DropdownMenuItem(
-                    value: "architecture",
-                    child: Text("Architecture"),
-                  ),
-                  DropdownMenuItem(
-                    value: "socialscience",
-                    child: Text("Social Science"),
-                  ),
-                  DropdownMenuItem(
-                    value: "electrical engineering",
-                    child: Text("Electrical Engineering"),
-                  ),
-                  DropdownMenuItem(
-                    value: "Applied science",
-                    child: Text("Applied Science"),
-                  ),
-                ],
-                onChanged: (value) {
-                  setState(() => selectedDepartment = value);
-                },
-                validator: (v) => v == null ? "Select department" : null,
-              ),
-
-              const SizedBox(height: 20),
-
-              label("PHONE"),
-              textField(
-                controller: phoneController,
-                hint: "",
-                icon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
-                validator: (v) => v == null || v.isEmpty ? "Required" : null,
-              ),
-
-              const SizedBox(height: 35),
-
-              SizedBox(
-                width: 180,
-                height: 55,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0D3B66),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: isLoading ? null : createStudentAccount,
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          "Create Account",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                ),
-              ),
-   const SizedBox(height: 10),
-              Center(
-                  child: Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
@@ -350,28 +360,28 @@ class _StudentsignupState extends State<Studentsignup> {
                       ),
                     ],
                   ),
-                ),
 
-              const SizedBox(height: 10),
+                  const SizedBox(height: 20),
 
-              const Center(
-                child: Text(
-                  "DDU REGISTRY",
-                  style: TextStyle(
-                    fontSize: 11,
-                    letterSpacing: 2,
-                    color: Colors.grey,
+                  const Text(
+                    "DDU REGISTRY",
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 2,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
+
+                  const SizedBox(height: 20),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  // LABEL
   Widget label(String text) {
     return Align(
       alignment: Alignment.centerLeft,
@@ -387,7 +397,6 @@ class _StudentsignupState extends State<Studentsignup> {
     );
   }
 
-  // TEXT FIELD
   Widget textField({
     required TextEditingController controller,
     required String hint,
@@ -418,7 +427,6 @@ class _StudentsignupState extends State<Studentsignup> {
     );
   }
 
-  // PASSWORD FIELD
   Widget passwordField({
     required TextEditingController controller,
     required bool isHidden,
@@ -433,7 +441,7 @@ class _StudentsignupState extends State<Studentsignup> {
         validator: validator,
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color.fromARGB(255, 253, 253, 253),
+          fillColor: Colors.white,
           suffixIcon: IconButton(
             icon: Icon(isHidden ? Icons.visibility_off : Icons.visibility),
             onPressed: onTap,
