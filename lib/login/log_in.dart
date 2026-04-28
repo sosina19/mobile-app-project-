@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'forgetpass.dart';
 import '../signup/studentsignup.dart';
 import 'package:mobile_app/admin.dart';
-import 'package:mobile_app/studentdashboard.dart';
-import 'package:mobile_app/teacherdashboard.dart';
+import 'package:mobile_app/screens/studentdashboard.dart';
+import 'package:mobile_app/screens/teacherdashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,9 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     // ✅ FIXED ENDPOINT (IMPORTANT)
-    final url = Uri.parse(
-      "https://s-backend-5f4c.onrender.com/auth",
-    );
+    final url = Uri.parse("https://s-backend-5f4c.onrender.com/auth");
 
     try {
       final response = await http.post(
@@ -68,9 +66,9 @@ class _LoginPageState extends State<LoginPage> {
 
         if (!mounted) return;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Successful")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Login Successful")));
 
         // ✅ NAVIGATION
         if (role == "admin") {
@@ -84,14 +82,23 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (_) => const TeacherDashboard()),
           );
         } else if (role == "student") {
+          final user = data["user"];
+
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const StudentDashboard()),
+            MaterialPageRoute(
+              builder: (_) => StudentDashboard(
+                studentId: user["id"].toString(),
+                name: user["fullname"].toString(),
+                email: user["email"].toString(),
+                role: role,
+              ),
+            ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Access Denied: $role")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Access Denied: $role")));
         }
       } else {
         String message = "Login failed";
@@ -103,15 +110,15 @@ class _LoginPageState extends State<LoginPage> {
           message = response.body;
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
 
     if (!mounted) return;
@@ -141,7 +148,10 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                         const Icon(
