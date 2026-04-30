@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'QrPage.dart';
-import 'historyPage.dart';
-import 'profile.dart';
+import 'package:mobile_app/login/log_in.dart';
+import 'package:mobile_app/service/token_service.dart';
 
 class StudentDashboard extends StatefulWidget {
   final String studentId;
@@ -21,72 +19,125 @@ class StudentDashboard extends StatefulWidget {
   @override
   State<StudentDashboard> createState() => _StudentDashboardState();
 }
-
 class _StudentDashboardState extends State<StudentDashboard> {
-  int currentIndex = 0;
+  Future<void> logout() async {
+    await TokenService.clear();
 
-  late final List<Widget> pages;
-
-  @override
-  void initState() {
-    super.initState();
-
-    pages = [
-      const Center(child: Text("Home Page", style: TextStyle(fontSize: 20))),
-
-      const Center(child: Text("Courses Page", style: TextStyle(fontSize: 20))),
-
-      // 📷 QR PAGE
-      QrPage(
-        studentId: widget.studentId,
-        name: widget.name,
-        email: widget.email,
-      ),
-
-      // 📊 HISTORY PAGE
-      HistoryPage(
-        studentId: widget.studentId,
-        name: widget.name,
-        email: widget.email,
-      ),
-
-      // 👤 PROFILE PAGE
-      Profile(
-        studentId: widget.studentId,
-        name: widget.name,
-        email: widget.email,
-        role: widget.role,
-      ),
-    ];
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginPage()),
+      (route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: pages[currentIndex],
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF1B305B),
-        unselectedItemColor: Colors.grey,
-
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: "Courses",
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.grey[100],
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          PopupMenuButton(
+            icon: const Icon(Icons.person, color: Colors.black),
+            onSelected: (value) {
+              if (value == "logout") {
+                logout();
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: "logout",
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.red),
+                    SizedBox(width: 10),
+                    Text("Logout"),
+                  ],
+                ),
+              ),
+            ],
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: "QR"),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 50),
+            Center(
+              child: Container(
+                width: 130,
+                height: 130,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.black12, width: 1),
+                ),
+                child: const Icon(
+                  Icons.person,
+                  size: 90,
+                  color: Color(0xFF1B305B),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Hello, Student',
+              style: TextStyle(
+                fontSize: 32,
+                fontFamily: 'serif',
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 40),
+            _buttonItem(Icons.qr_code_2, 'My QR Code'),
+            _buttonItem(Icons.article_outlined, 'My Courses'),
+            _buttonItem(Icons.calendar_month, 'Attendance History'),
+          ],
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: 3,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black45,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.article_outlined), label: 'Courses'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_month_outlined), label: 'Attendance'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buttonItem(IconData icon, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE3E9E2),
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 24, color: Colors.black87),
+            const SizedBox(width: 15),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 18, color: Colors.black87),
+            ),
+          ],
+        ),
       ),
     );
   }

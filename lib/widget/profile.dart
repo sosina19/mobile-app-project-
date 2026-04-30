@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../service/token_service.dart';
+import 'package:mobile_app/service/token_service.dart';
 import 'package:mobile_app/login/log_in.dart';
 
 class ProfileButton extends StatefulWidget {

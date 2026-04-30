@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'welcome.dart';
+import 'package:mobile_app/service/token_service.dart';
+import 'admin.dart';
+import 'package:mobile_app/screens/studentdashboard.dart';
+import 'package:mobile_app/screens/teacherdashboard.dart';
 
 
 class Splash extends StatefulWidget {
@@ -11,19 +15,59 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+
   @override
   void initState() {
     super.initState();
-
-    // splash duration
-    Timer(const Duration(seconds: 2), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Welcome()),
-      );
-    });
+    checkLogin();
   }
 
+  Future<void> checkLogin() async {
+  await Future.delayed(const Duration(seconds: 2));
+
+  final token = await TokenService.getToken();
+  final role = await TokenService.getRole();
+  final id = await TokenService.getUserId();
+  final name = await TokenService.getName();
+  final email = await TokenService.getEmail();
+  print("TOKEN: $token");
+  print("ROLE: $role");
+  if (!mounted) return;
+
+  if (token != null && role != null) {
+    if (role == "admin") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdminHome()),
+      );
+    } 
+    else if (role == "teacher") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const TeacherDashboard()),
+      );
+    } 
+    else {
+      //  FIX: you must NOT call empty constructor
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => StudentDashboard(
+            studentId: id ?? "",
+            name: name ?? "",
+            email: email ?? "",
+            role: role,
+          ),
+        ),
+      );
+    }
+  } else {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const Welcome()),
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

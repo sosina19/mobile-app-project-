@@ -62,8 +62,7 @@ class _StudentsignupState extends State<Studentsignup> {
               "studId": studentIdController.text.trim(),
               "department": selectedDepartment ?? "",
               "phoneNo": phoneController.text.trim(),
-              
-              
+              "role": "Student"
             }),
           )
           .timeout(const Duration(seconds: 40));

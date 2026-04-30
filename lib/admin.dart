@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../widget/profile.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -59,9 +60,9 @@ class _AdminHomeState extends State<AdminHome> {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Teacher created")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Teacher created")));
 
         emailController.clear();
         passwordController.clear();
@@ -92,6 +93,7 @@ class _AdminHomeState extends State<AdminHome> {
       appBar: AppBar(
         title: const Text("Admin Dashboard"),
         backgroundColor: const Color(0xFF0D3B66),
+        actions: [ProfileButton(name: "Sosi Admin", email: "admin@email.com")],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -104,8 +106,13 @@ class _AdminHomeState extends State<AdminHome> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _card("Users", users.length.toString()),
-                      _card("Teachers",
-                          users.where((u) => u["role"] == "teacher").length.toString()),
+                      _card(
+                        "Teachers",
+                        users
+                            .where((u) => u["role"] == "teacher")
+                            .length
+                            .toString(),
+                      ),
                     ],
                   ),
 
@@ -156,7 +163,8 @@ class _AdminHomeState extends State<AdminHome> {
                             subtitle: Text("Role: ${user["role"]}"),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => deleteUser(user["id"].toString()),
+                              onPressed: () =>
+                                  deleteUser(user["id"].toString()),
                             ),
                           ),
                         );
