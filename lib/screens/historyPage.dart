@@ -5,6 +5,9 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Attendance History 📊"));
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 228, 225, 225),
+      body: Column(children: [Text("comming sooon")]),
+    );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+import '../service/token_service.dart';
 import 'package:mobile_app/login/log_in.dart';
-import 'package:mobile_app/service/token_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final String name;
@@ -13,6 +16,17 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String? imagePath;
+
+  Future<void> pickImage() async {
+    final picker = ImagePicker();
+    final file = await picker.pickImage(source: ImageSource.gallery);
+
+    if (file != null) {
+      setState(() => imagePath = file.path);
+    }
+  }
+
   Future<void> logout() async {
     await TokenService.clear();
 
@@ -25,210 +39,205 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void showEmailDialog() {
+  void confirmLogout() {
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Student Email"),
-        content: Text(widget.email),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
-          ),
-        ],
-      ),
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Color.fromARGB(255, 228, 225, 225),
+          title: const Text("Confirm Logout"),
+          content: const Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                await logout();
+              },
+              child: const Text("Yes", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 228, 225, 225),
 
-      // 📌 APP BAR
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E4B7A),
-        title: const Text("Profile", style: TextStyle(color: Colors.white)),
+        title: const Text("Profile"),
         centerTitle: true,
-
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person, color: Colors.white),
-            onPressed: showEmailDialog,
-          ),
-        ],
       ),
 
-      body: Center(
-        child: SingleChildScrollView(
-          child: Container(
-            width: 500,
-            padding: const EdgeInsets.all(20),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double maxWidth = constraints.maxWidth > 600
+              ? 600
+              : constraints.maxWidth;
 
-            child: Column(
-              children: [
-                // 🧾 PROFILE CARD
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E4B7A),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 3),
+          return Center(
+            child: SingleChildScrollView(
+              child: Container(
+                width: maxWidth,
+                padding: const EdgeInsets.all(16),
+
+                child: Column(
+                  children: [
+                    // 👤 PROFILE CARD
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E4B7A),
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      // 👤 ICON
-                      Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 246, 246, 247),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          widget.name.isNotEmpty ? widget.name[0] : "U",
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E4B7A),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            onTap: pickImage,
+                            child: Container(
+                              width: 85,
+                              height: 85,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(12),
+                                image: imagePath != null
+                                    ? DecorationImage(
+                                        image: FileImage(File(imagePath!)),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
+                              ),
+                              child: imagePath == null
+                                  ? const Icon(
+                                      Icons.person,
+                                      size: 40,
+                                      color: Colors.white,
+                                    )
+                                  : null,
+                            ),
                           ),
-                        ),
-                      ),
 
-                      const SizedBox(height: 15),
+                          const SizedBox(height: 15),
 
-                      // NAME
-                      Text(
-                        widget.name,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-
-                      const SizedBox(height: 5),
-
-                      // EMAIL
-                      Text(
-                        widget.email,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                // 🏫 DEPARTMENT
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "DEPARTMENT",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5F5),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.school, color: Color(0xFF1E4B7A)),
-                      SizedBox(width: 10),
-                      Text(
-                        "Software Engineering",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 25),
-
-                // ⚙️ SETTINGS
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "ACADEMIC SETTINGS",
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                _item(Icons.privacy_tip, "Privacy Policy", () {}),
-                _item(Icons.settings, "Account Settings", () {}),
-
-                const SizedBox(height: 25),
-
-                // 🔴 LOGOUT
-                GestureDetector(
-                  onTap: logout,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(Icons.logout, color: Colors.red),
-                        SizedBox(width: 10),
-                        Text(
-                          "LOG OUT",
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            widget.name,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
+
+                          const SizedBox(height: 5),
+
+                          Text(
+                            widget.email,
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+
+                    const SizedBox(height: 15),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF2F3F5),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          Text(
+                            "DEPARTMENT",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            "Software Engineering",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 245, 244, 244),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 60,
+                      child: _item(Icons.settings, "Account Settings", () {}),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 245, 244, 244),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 60,
+                      child: _item(Icons.lock, "Privacy Policy", () {}),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 245, 244, 244),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      height: 60,
+                      child: _item(
+                        Icons.logout,
+                        "Logout",
+                        confirmLogout,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _item(IconData icon, String title, VoidCallback onTap) {
-    return Card(
+  Widget _item(
+    IconData icon,
+    String title,
+    VoidCallback onTap, {
+    Color color = Colors.black,
+  }) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF1E4B7A)),
-        title: Text(title),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        leading: Icon(icon, color: color),
+        title: Text(title, style: TextStyle(color: color)),
         onTap: onTap,
       ),
     );

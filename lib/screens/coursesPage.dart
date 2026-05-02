@@ -5,6 +5,6 @@ class CoursePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text("Courses Page 📚"));
+    return Scaffold(backgroundColor: .fromARGB(255, 228, 225, 225));
   }
 }
