@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/login/log_in.dart';
 import 'package:mobile_app/service/token_service.dart';
 
+// ✅ PAGES
+import 'coursesPage.dart';
+import 'QrPage.dart';
+import 'historyPage.dart';
+import 'profile.dart';
+
 class StudentDashboard extends StatefulWidget {
   final String studentId;
   final String name;
@@ -19,7 +25,28 @@ class StudentDashboard extends StatefulWidget {
   @override
   State<StudentDashboard> createState() => _StudentDashboardState();
 }
+
 class _StudentDashboardState extends State<StudentDashboard> {
+  int currentIndex = 0;
+
+  // ✅ CHANGEABLE ATTENDANCE VALUE
+  int attendanceRate = 0;
+
+  late List<Widget> pages;
+
+  @override
+  void initState() {
+    super.initState();
+
+    pages = [
+      _homePage(),
+      const CoursePage(),
+      const HistoryPage(),
+      QrPage(name: widget.name, email: widget.email),
+      ProfilePage(name: widget.name, email: widget.email),
+    ];
+  }
+
   Future<void> logout() async {
     await TokenService.clear();
 
@@ -33,109 +60,196 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.grey[100],
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(Icons.person, color: Colors.black),
-            onSelected: (value) {
-              if (value == "logout") {
-                logout();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: "logout",
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, color: Colors.red),
-                    SizedBox(width: 10),
-                    Text("Logout"),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 50),
-            Center(
-              child: Container(
-                width: 130,
-                height: 130,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black12, width: 1),
-                ),
-                child: const Icon(
-                  Icons.person,
-                  size: 90,
-                  color: Color(0xFF1B305B),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Hello, Student',
-              style: TextStyle(
-                fontSize: 32,
-                fontFamily: 'serif',
-                color: Colors.black,
-              ),
-            ),
-            const SizedBox(height: 40),
-            _buttonItem(Icons.qr_code_2, 'My QR Code'),
-            _buttonItem(Icons.article_outlined, 'My Courses'),
-            _buttonItem(Icons.calendar_month, 'Attendance History'),
-          ],
-        ),
-      ),
+      body: pages[currentIndex],
+
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        currentIndex: 3,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black45,
+        currentIndex: currentIndex,
+        onTap: (index) {
+          setState(() => currentIndex = index);
+        },
+        selectedItemColor: const Color(0xFF1E4B7A),
+        unselectedItemColor: Colors.grey,
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.article_outlined), label: 'Courses'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month_outlined), label: 'Attendance'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Courses'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'QR'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
   }
 
-  Widget _buttonItem(IconData icon, String label) {
+  // ✅ HOME PAGE
+  Widget _homePage() {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 252, 252, 253),
+
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF1E4B7A),
+        centerTitle: true,
+        title: const Text(
+          "Dire Dawa University",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+
+      body: Center(
+        child: Container(
+          width: 500,
+          margin: const EdgeInsets.all(12),
+
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Dire Dawa University",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E4B7A),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // 👤 STUDENT INFO CARD
+                Center(
+                  child: Container(
+                    width: 480,
+                    padding: const EdgeInsets.all(20),
+
+                    decoration: BoxDecoration(
+                      color: Color(0xFF1E4B7A),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+
+                    child: Column(
+                      children: [
+                        const CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Color.fromARGB(255, 252, 252, 252),
+                          child: Icon(Icons.person, color: Color(0xFF1E4B7A)),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        Text(
+                          widget.name,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        Text(
+                          widget.email,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 30),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 5),
+                    ],
+                  ),
+
+                  child: Column(
+                    children: [
+                      const Text(
+                        "ATTENDANCE RATE",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "$attendanceRate%",
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1E4B7A),
+                            ),
+                          ),
+
+                          const SizedBox(width: 10),
+
+                          const Icon(
+                            Icons.verified,
+                            color: Colors.green,
+                            size: 18,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                const Text(
+                  "Enrolled Courses",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E4B7A),
+                  ),
+                ),
+
+                const SizedBox(height: 15),
+
+                _courseItem("Software Engineering"),
+                _courseItem("Database Systems"),
+                _courseItem("Mobile App Development"),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 📘 COURSE ITEM
+  Widget _courseItem(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 8),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
           color: const Color(0xFFE3E9E2),
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 24, color: Colors.black87),
-            const SizedBox(width: 15),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 18, color: Colors.black87),
-            ),
+            const Icon(Icons.book, color: Color(0xFF1E4B7A)),
+            const SizedBox(width: 16),
+            Text(title, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),

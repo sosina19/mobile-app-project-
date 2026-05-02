@@ -37,9 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() => isLoading = true);
 
     // ✅ FIXED ENDPOINT (IMPORTANT)
-    final url = Uri.parse(
-      "https://s-backend-5f4c.onrender.com/auth",
-    );
+    final url = Uri.parse("https://s-backend-5f4c.onrender.com/auth");
 
     try {
       final response = await http.post(
@@ -58,30 +56,30 @@ class _LoginPageState extends State<LoginPage> {
         final data = jsonDecode(response.body);
         print("LOGIN RESPONSE: $data");
 
-          await TokenService.saveToken(data["access_token"]);
+        await TokenService.saveToken(data["access_token"]);
 
         //  SAFE ROLE EXTRACTION (FIXED)
         final role = (data["role"] ?? data["user"]?["role"])
             .toString()
             .trim()
             .toLowerCase();
-            await TokenService.saveRole(role);
-            await TokenService.saveToken(data["access_token"]);
-            
-final user = data["user"];
+        await TokenService.saveRole(role);
+        await TokenService.saveToken(data["access_token"]);
 
-await TokenService.saveUserId(user["id"].toString());
-await TokenService.saveName(user["fullname"]);
-await TokenService.saveEmail(user["email"]);
-await TokenService.saveRole(role);
+        final user = data["user"];
+
+        await TokenService.saveUserId(user["id"].toString());
+        await TokenService.saveName(user["fullname"]);
+        await TokenService.saveEmail(user["email"]);
+        await TokenService.saveRole(role);
 
         print("ROLE FOUND: $role");
 
         if (!mounted) return;
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Login Successful")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Login Successful")));
 
         // NAVIGATION
         if (role == "admin") {
@@ -97,17 +95,19 @@ await TokenService.saveRole(role);
         } else if (role == "student") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => StudentDashboard(
-              studentId: user["id"].toString(),
-              name: user["fullname"],
-              email: user["email"],
-              role: role,
-            )),
+            MaterialPageRoute(
+              builder: (_) => StudentDashboard(
+                studentId: user["id"].toString(),
+                name: user["fullname"],
+                email: user["email"],
+                role: role,
+              ),
+            ),
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Access Denied: $role")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Access Denied: $role")));
         }
       } else {
         String message = "Login failed";
@@ -119,15 +119,15 @@ await TokenService.saveRole(role);
           message = response.body;
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(message)));
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
 
     if (!mounted) return;
@@ -157,7 +157,10 @@ await TokenService.saveRole(role);
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                         const Icon(
