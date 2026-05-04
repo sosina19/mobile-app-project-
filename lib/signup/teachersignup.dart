@@ -102,19 +102,52 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
-      body: SafeArea(
+  @override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: const Color(0xFFF4F5F7),
+
+    body: Center(
+      child: SizedBox(
+        width: 400,
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
 
-                const SizedBox(height: 35),
+                // TOP BAR (same as student)
+                SafeArea(
+                  child: Container(
+                    width: double.infinity,
+                    color: const Color(0xFF1E4B7A),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                        const Icon(Icons.school,
+                            color: Color.fromARGB(255, 204, 223, 240)),
+                        const SizedBox(width: 8),
+                        const Text(
+                          "DDU Attendance System",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
 
                 const Text(
                   "Teacher Portal",
@@ -374,8 +407,10 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
           ),
         ),
       ),
+    ),
     );
   }
+  
 
   // TEXT FIELD
   Widget _buildTextField({
@@ -384,12 +419,14 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
     required IconData icon,
     required String? Function(String?) validator,
   }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.grey),
-        hintText: hint,
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: TextFormField(
+        controller: controller,
+        validator: validator,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.grey),
+          hintText: hint,
         filled: true,
         fillColor: Colors.white,
         border: OutlineInputBorder(
@@ -397,7 +434,7 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
           borderSide: BorderSide.none,
         ),
       ),
-    );
+     ), );
   }
 
   // PASSWORD FIELD

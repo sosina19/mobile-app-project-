@@ -100,22 +100,22 @@ class _StudentDashboardState extends State<StudentDashboard> {
         ),
 
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: email == null
-                  ? const CircularProgressIndicator(strokeWidth: 2)
-                  : Text(
-                      email![0].toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.blueGrey,
-                        fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: email == null
+                    ? const CircularProgressIndicator(strokeWidth: 2)
+                    : Text(
+                        email![0].toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-            ),
-          ),
-        ],
+              ),
+            )
+          ],
       ),
 
       body: LayoutBuilder(
