@@ -19,6 +19,8 @@ class _AdminHomeState extends State<AdminHome> {
   String? email;
   String? role;
   bool loading = true;
+  int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -181,7 +183,7 @@ class _AdminHomeState extends State<AdminHome> {
                       ),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
 
                     // PROFILE CARD (FULL WIDTH RESPONSIVE)
                     Container(
