@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/login/log_in.dart';
 import 'package:mobile_app/service/token_service.dart';
-
 // PAGES
 import 'coursesPage.dart';
 import 'QrPage.dart';
@@ -28,7 +27,7 @@ class StudentDashboard extends StatefulWidget {
 
 class _StudentDashboardState extends State<StudentDashboard> {
   int currentIndex = 0;
-
+  String? email;
   int attendanceRate = 0;
 
   late List<Widget> pages;
@@ -36,6 +35,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   void initState() {
     super.initState();
+      loadEmail();
 
     pages = [
       _homePage(),
@@ -45,6 +45,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
       ProfilePage(name: widget.name.toUpperCase(), email: widget.email),
     ];
   }
+  
+  Future<void> loadEmail() async {
+  String? savedEmail = await TokenService.getEmail();
+
+  setState(() {
+    email = savedEmail;
+  });
+} 
 
   Future<void> logout() async {
     await TokenService.clear();
@@ -90,6 +98,24 @@ class _StudentDashboardState extends State<StudentDashboard> {
           "Dire Dawa University",
           style: TextStyle(color: Colors.white),
         ),
+
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: email == null
+                  ? const CircularProgressIndicator(strokeWidth: 2)
+                  : Text(
+                      email![0].toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+            ),
+          ),
+        ],
       ),
 
       body: LayoutBuilder(
@@ -110,7 +136,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     // TITLE (CENTERED)
                     const Center(
                       child: Text(
-                        "Dire Dawa University",
+                        "Welcome To Student Dashboard",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
@@ -122,7 +148,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    // 👤 PROFILE CARD (FULL WIDTH RESPONSIVE)
+                    // PROFILE CARD (FULL WIDTH RESPONSIVE)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -170,7 +196,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    // 📊 ATTENDANCE
+                    // ATTENDANCE
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
