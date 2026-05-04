@@ -70,12 +70,6 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
 
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1E4B7A),
-        title: const Text("Profile"),
-        centerTitle: true,
-      ),
-
       body: LayoutBuilder(
         builder: (context, constraints) {
           double maxWidth = constraints.maxWidth > 600
