@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
 import 'create_course.dart';
+import 'profile.dart';
+import '../service/token_service.dart';
 
 class TeacherDashboard extends StatefulWidget {
-  final String name;
-  final String email;
-
-  const TeacherDashboard({
-    super.key,
-    required this.name,
-    required this.email,
-  });
+ 
+const TeacherDashboard({super.key});
 
   @override
   State<TeacherDashboard> createState() => _TeacherDashboardState();
@@ -19,8 +15,25 @@ class TeacherDashboard extends StatefulWidget {
 
 class _TeacherDashboardState extends State<TeacherDashboard> {
   int currentIndex = 0;
-
+   String? name;
+  String? email;
  
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    String? savedName = await TokenService.getName();
+    String? savedEmail = await TokenService.getEmail();
+
+    setState(() {
+      name = savedName;
+      email = savedEmail;
+    });
+  }
   int getTotalStudents(List<Course> courses) {
     return courses.fold(0, (sum, c) => sum + c.students);
   }
@@ -43,12 +56,32 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       _homePage(courses),
       _scanPage(),
       _historyPage(),
-      _profilePage(),
+     ProfilePage(name: name ?? "Loading...",
+        email: email ?? "Loading...",),
     ];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
+  appBar: AppBar(
+    backgroundColor: const Color(0xFF1E4B7A),
+    centerTitle: true,
+    title: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: const [
+        Icon(Icons.school, color: Colors.white),
+        SizedBox(width: 8),
+        Text("Dire Dawa University",
+            style: TextStyle(color: Colors.white)),
+      ],
+    ),
 
+    actions: const [
+      Padding(
+        padding: EdgeInsets.only(right: 12),
+        child: Icon(Icons.notifications_none, color: Colors.white),
+      ),
+    ],
+  ),
       body: pages[currentIndex],
 
      
@@ -96,30 +129,8 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: const [
-                    Icon(Icons.school, color: Color(0xFF1E4B7A)),
-                    SizedBox(width: 8),
-                    Text(
-                      "Dire Dawa University",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                const Icon(Icons.notifications_none),
-              ],
-            ),
-
             const SizedBox(height: 20),
 
-            
             Text(
               "ACADEMIC YEAR ${getCurrentYear()}",
               style: const TextStyle(color: Colors.grey),
@@ -129,7 +140,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
            
             Text(
-              "Welcome, ${widget.name}",
+              "Welcome To Teacher Dashboard",
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
@@ -234,14 +245,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   Widget _historyPage() {
     return const Center(child: Text("Attendance History"));
   }
-
- 
-  Widget _profilePage() {
-    return Center(
-      child: Text("Teacher: ${widget.name}\n${widget.email}"),
-    );
-  }
-
+  
   
   Widget _statCard(String title, String value) {
     return Container(

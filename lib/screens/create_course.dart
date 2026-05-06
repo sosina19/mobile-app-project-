@@ -53,7 +53,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
     Navigator.pop(context, true);
   }
-
   @override
   void dispose() {
     nameController.dispose();
@@ -66,12 +65,11 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
-
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF1E4B7A),
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text("DDU", style: TextStyle(color: Colors.black)),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("Dire Dawa University", style: TextStyle(color: Colors.white)),
       ),
 
       body: Center(
@@ -86,7 +84,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                 children: [
 
                   const SizedBox(height: 10),
-
                   const Text(
                     "Create New Course",
                     style: TextStyle(
@@ -103,8 +100,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                   ),
 
                   const SizedBox(height: 30),
-
-                 
                   _label("COURSE NAME"),
                   _field(
                     controller: nameController,
@@ -152,8 +147,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                   ),
 
                   const SizedBox(height: 20),
-
-                 
+                
                   _label("YEAR"),
                   DropdownButtonFormField<String>(
                     value: year,

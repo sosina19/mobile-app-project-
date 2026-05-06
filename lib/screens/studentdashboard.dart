@@ -90,33 +90,27 @@ class _StudentDashboardState extends State<StudentDashboard> {
   Widget _homePage() {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E4B7A),
         centerTitle: true,
-        title: const Text(
-          "Dire Dawa University",
-          style: TextStyle(color: Colors.white),
-        ),
-
-        actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                child: email == null
-                    ? const CircularProgressIndicator(strokeWidth: 2)
-                    : Text(
-                        email![0].toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.blueGrey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-              ),
-            )
-          ],
+          title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Icon(Icons.school, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            "Dire Dawa University",
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
       ),
+       actions: const [
+    Padding(
+      padding: EdgeInsets.only(right: 12),
+      child: Icon(Icons.notifications_none, color: Colors.white),
+    ),
+  ],
+ ),
 
       body: LayoutBuilder(
         builder: (context, constraints) {

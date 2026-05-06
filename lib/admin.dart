@@ -266,11 +266,28 @@ class _AdminHomeState extends State<AdminHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
-
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 53, 79, 122),
-        title: const Text("Dire Dawa University"),
+     appBar: AppBar(
+      backgroundColor: const Color(0xFF1E4B7A),
+      centerTitle: true,
+      title: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.school, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            "Dire Dawa University",
+            style: TextStyle(color: Colors.white),
+          ),
+        ],
       ),
+
+      actions: const [
+        Padding(
+          padding: EdgeInsets.only(right: 12),
+          child: Icon(Icons.notifications_none, color: Colors.white),
+        ),
+      ],
+    ),
 
       body: pages[currentIndex],
 

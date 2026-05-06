@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
         } else if (role == "teacher") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const TeacherDashboard(name: '', email: '',)),
+            MaterialPageRoute(builder: (_) => const TeacherDashboard()),
           );
         } else if (role == "student") {
           Navigator.pushReplacement(
