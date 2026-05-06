@@ -44,7 +44,7 @@ class _SplashState extends State<Splash> {
     else if (role == "teacher") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const TeacherDashboard()),
+        MaterialPageRoute(builder: (_) => const TeacherDashboard(name: '', email: '',)),
       );
     } 
     else {

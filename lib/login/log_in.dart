@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../service/token_service.dart';
-import 'forgetpass.dart';
 import '../signup/studentsignup.dart';
 import 'package:mobile_app/admin.dart';
 import 'package:mobile_app/screens/studentdashboard.dart';
@@ -90,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
         } else if (role == "teacher") {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (_) => const TeacherDashboard()),
+            MaterialPageRoute(builder: (_) => const TeacherDashboard(name: '', email: '',)),
           );
         } else if (role == "student") {
           Navigator.pushReplacement(

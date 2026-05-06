@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/signup/studentsignup.dart';
 import 'login/log_in.dart';
-import 'signup/studentsignup.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -46,7 +45,7 @@ class Welcome extends StatelessWidget {
                           "DIRE DAWA",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1E4B7A),
+                            color: Color(0xFF1E4B7A),
                             fontSize: 16,
                           ),
                         ),
