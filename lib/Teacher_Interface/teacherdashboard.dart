@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
 import 'create_course.dart';
-import 'profile.dart';
+import '../Student_Interface/profile.dart';
 import '../service/token_service.dart';
 
 class TeacherDashboard extends StatefulWidget {
@@ -34,6 +34,12 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       email = savedEmail;
     });
   }
+   String getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  }
   int getTotalStudents(List<Course> courses) {
     return courses.fold(0, (sum, c) => sum + c.students);
   }
@@ -62,26 +68,26 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
     return Scaffold(
        backgroundColor: const Color.fromARGB(255, 228, 225, 225),
-  appBar: AppBar(
-    backgroundColor: const Color(0xFF1E4B7A),
-    centerTitle: true,
-    title: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: const [
-        Icon(Icons.school, color: Colors.white),
-        SizedBox(width: 8),
-        Text("Dire Dawa University",
-            style: TextStyle(color: Colors.white)),
-      ],
-    ),
-
-    actions: const [
-      Padding(
-        padding: EdgeInsets.only(right: 12),
-        child: Icon(Icons.notifications_none, color: Colors.white),
-      ),
+ appBar: AppBar(
+  automaticallyImplyLeading: false, 
+  backgroundColor: const Color(0xFF1E4B7A),
+  centerTitle: true,
+  title: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: const [
+      Icon(Icons.school, color: Colors.white),
+      SizedBox(width: 8),
+      Text("Dire Dawa University",
+          style: TextStyle(color: Colors.white)),
     ],
   ),
+  actions: const [
+    Padding(
+      padding: EdgeInsets.only(right: 12),
+      child: Icon(Icons.notifications_none, color: Colors.white),
+    ),
+  ],
+),
       body: pages[currentIndex],
 
      
@@ -140,7 +146,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
            
             Text(
-              "Welcome To Teacher Dashboard",
+              "${getGreeting()}, ${name ?? "Teacher"}",
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,

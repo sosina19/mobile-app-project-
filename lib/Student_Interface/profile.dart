@@ -84,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 child: Column(
                   children: [
-                    // 👤 PROFILE CARD
+                  
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),

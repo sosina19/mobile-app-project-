@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/login/log_in.dart';
 import 'package:mobile_app/service/token_service.dart';
-// PAGES
+
 import 'coursesPage.dart';
 import 'QrPage.dart';
 import 'historyPage.dart';
@@ -86,11 +86,12 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  // ✅ RESPONSIVE HOME PAGE
+  
   Widget _homePage() {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
       appBar: AppBar(
+         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF1E4B7A),
         centerTitle: true,
           title: Row(
@@ -127,7 +128,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // TITLE (CENTERED)
+                   
                     const Center(
                       child: Text(
                         "Welcome To Student Dashboard",
@@ -142,7 +143,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    // PROFILE CARD (FULL WIDTH RESPONSIVE)
+                   
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -190,7 +191,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    // ATTENDANCE
+                    
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
@@ -239,7 +240,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    // 📚 COURSES
+                    
                     const Text(
                       "Enrolled Courses",
                       style: TextStyle(
@@ -264,7 +265,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  // 📘 COURSE ITEM
+  
   Widget _courseItem(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),

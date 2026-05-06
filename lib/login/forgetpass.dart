@@ -20,7 +20,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       return;
     }
 
-    // Fake delay (simulate sending email)
+    
     await Future.delayed(const Duration(seconds: 2));
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -81,7 +81,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                 const SizedBox(height: 20),
 
-                // Email field
+               
                 TextField(
                   controller: emailController,
                   decoration: InputDecoration(
@@ -95,7 +95,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                 const SizedBox(height: 100),
 
-                // Button
+                
                 SizedBox(
                   width: 180,
                   height: 45,

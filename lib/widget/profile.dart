@@ -43,7 +43,7 @@ class _ProfileButtonState extends State<ProfileButton> {
 
   if (!mounted) return;
 
-  Navigator.pop(context); // close bottom sheet
+  Navigator.pop(context); 
 
   Navigator.pushAndRemoveUntil(
     context,

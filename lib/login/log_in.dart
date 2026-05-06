@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../service/token_service.dart';
 import '../signup/studentsignup.dart';
 import 'package:mobile_app/admin.dart';
-import 'package:mobile_app/screens/studentdashboard.dart';
-import 'package:mobile_app/screens/teacherdashboard.dart';
+import 'package:mobile_app/Student_Interface/studentdashboard.dart';
+import 'package:mobile_app/Teacher_Interface/teacherdashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = true);
 
-    // ✅ FIXED ENDPOINT (IMPORTANT)
+    
     final url = Uri.parse("https://s-backend-5f4c.onrender.com/auth");
 
     try {
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
         await TokenService.saveToken(data["access_token"]);
 
-        //  SAFE ROLE EXTRACTION (FIXED)
+       
         final role = (data["role"] ?? data["user"]?["role"])
             .toString()
             .trim()
@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
           context,
         ).showSnackBar(const SnackBar(content: Text("Login Successful")));
 
-        // NAVIGATION
+
         if (role == "admin") {
           Navigator.pushReplacement(
             context,
@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // TOP BAR
+              
                 SafeArea(
                   child: Container(
                     width: double.infinity,

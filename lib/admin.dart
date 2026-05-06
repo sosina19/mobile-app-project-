@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/signup/studentsignup.dart';
 import 'package:mobile_app/signup/teachersignup.dart';
 import '../service/token_service.dart';
-import '../screens/profile.dart';
+import 'Student_Interface/profile.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -126,7 +126,7 @@ class _AdminHomeState extends State<AdminHome> {
       const SizedBox(),
       const Center(child: Text("History")),
 
-      // ✅ THIS MUST BE FIXED
+     
       ProfilePage(
         name: name ?? "Loading...",
         email: email ?? "Loading...",
@@ -148,7 +148,6 @@ class _AdminHomeState extends State<AdminHome> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // small top handle
             Container(
               width: 60,
               height: 5,
@@ -171,7 +170,7 @@ class _AdminHomeState extends State<AdminHome> {
 
             const SizedBox(height: 20),
 
-            // STUDENT CARD
+           
             InkWell(
               onTap: () {
                 Navigator.pop(context);
@@ -214,7 +213,7 @@ class _AdminHomeState extends State<AdminHome> {
 
             const SizedBox(height: 12),
 
-            // TEACHER CARD
+            
             InkWell(
               onTap: () {
                 Navigator.pop(context);
@@ -267,6 +266,7 @@ class _AdminHomeState extends State<AdminHome> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
      appBar: AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: const Color(0xFF1E4B7A),
       centerTitle: true,
       title: const Row(

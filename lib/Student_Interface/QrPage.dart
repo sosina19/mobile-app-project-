@@ -28,7 +28,7 @@ class QrPage extends StatelessWidget {
 
                 child: Column(
                   children: [
-                    // 📦 STUDENT PORTAL HEADER
+                    
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
@@ -70,7 +70,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // 🔵 BLUE USER CARD
+                    
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -146,7 +146,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // ⬜ QR CODE CARD
+                    
                     Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
@@ -165,7 +165,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    // 🟢 VERIFIED
+                  
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -194,7 +194,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    // 📄 INSTRUCTION
+                  
                     const Text(
                       "Hold your device steady in front of the scanner for instant attendance verification",
                       textAlign: TextAlign.center,

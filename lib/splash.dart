@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'welcome.dart';
 import 'package:mobile_app/service/token_service.dart';
 import 'admin.dart';
-import 'package:mobile_app/screens/studentdashboard.dart';
-import 'package:mobile_app/screens/teacherdashboard.dart';
+import 'package:mobile_app/Student_Interface/studentdashboard.dart';
+import 'package:mobile_app/Teacher_Interface/teacherdashboard.dart';
 
 
 class Splash extends StatefulWidget {
