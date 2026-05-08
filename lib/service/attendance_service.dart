@@ -1,27 +1,64 @@
 class AttendanceService {
-  // stores unique present students (by email)
+
   static final Set<String> _presentStudents = {};
 
-  /// Mark a student as present
+  
+  static final List<Map<String, dynamic>> _attendanceHistory = [];
+
+
   static void markPresent(String email) {
     _presentStudents.add(email);
   }
 
-  /// Check if already marked present
+ 
   static bool isPresent(String email) {
     return _presentStudents.contains(email);
   }
 
-  /// Total present students
   static int get presentCount => _presentStudents.length;
 
-  /// Reset attendance (new session / new course)
+  
   static void reset() {
     _presentStudents.clear();
   }
 
-  /// Get all present students (optional use for history page)
-  static List<String> getAllPresent() {
-    return _presentStudents.toList();
+
+  static void saveAttendance({
+    required String name,
+    required String email,
+    required String courseCode,
+    required String courseName,
+  }) {
+    _attendanceHistory.add({
+      "name": name,
+      "email": email,
+      "courseCode": courseCode,
+      "courseName": courseName,
+      "present": true,
+      "date": DateTime.now(),
+    });
+  }
+
+
+  static List<Map<String, dynamic>>
+      getAttendanceByCourseAndDate(
+    String courseCode,
+    DateTime selectedDate,
+  ) {
+    return _attendanceHistory.where((record) {
+
+      final date = record["date"] as DateTime;
+
+      return record["courseCode"] == courseCode &&
+          date.year == selectedDate.year &&
+          date.month == selectedDate.month &&
+          date.day == selectedDate.day;
+
+    }).toList();
+  }
+
+  
+  static List<Map<String, dynamic>> getAllHistory() {
+    return _attendanceHistory;
   }
 }

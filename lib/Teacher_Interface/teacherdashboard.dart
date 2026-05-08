@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/Teacher_Interface/attendance_history.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
 import '../service/token_service.dart';
@@ -74,7 +75,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
 
-      // ✅ ONLY FIXED APPBAR
+      
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -128,7 +129,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     );
   }
 
-  // 🏠 HOME PAGE (UNCHANGED STRUCTURE)
+  
   Widget _homePage(List<Course> courses) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -213,12 +214,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   }
 
   Widget _historyPage() {
-    return Center(
-      child: Text(
-        "Present Students: ${AttendanceService.presentCount}",
-        style: const TextStyle(fontSize: 18),
-      ),
-    );
+    return const AttendanceHistoryPage();
   }
 
   Widget _statCard(String title, String value) {

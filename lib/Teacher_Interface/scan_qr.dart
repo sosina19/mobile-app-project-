@@ -87,6 +87,12 @@ class _ScanQrPageState extends State<ScanQrPage> {
       if (AttendanceService.isPresent(email)) return;
 
       AttendanceService.markPresent(email);
+      AttendanceService.saveAttendance(
+  name: name,
+  email: email,
+  courseCode: selectedCourse!.code,
+  courseName: selectedCourse!.name,
+);
       scannedEmails.add(email);
 
       recentScans.insert(0, {
@@ -109,7 +115,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
       onWillPop: _onBack,
       child: Scaffold(
 
-        // ✅ ONLY FIXED HEADER
+       
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,

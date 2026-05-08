@@ -103,7 +103,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                   _label("COURSE NAME"),
                   _field(
                     controller: nameController,
-                    hint: "e.g. Advanced Thermodynamics",
+                    hint: "e.g. Software Engineering",
                     validator: (v) => v!.isEmpty ? "Required" : null,
                   ),
 
@@ -113,7 +113,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                   _label("COURSE CODE"),
                   _field(
                     controller: codeController,
-                    hint: "MECH-4102",
+                    hint: "SOFT-4102",
                     validator: (v) => v!.isEmpty ? "Required" : null,
                   ),
 
