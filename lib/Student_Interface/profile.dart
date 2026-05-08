@@ -65,6 +65,12 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // ✅ ONLY CHANGE: Capitalize name
+  String formatName(String name) {
+    if (name.isEmpty) return name;
+    return name[0].toUpperCase() + name.substring(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,9 +78,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
       body: LayoutBuilder(
         builder: (context, constraints) {
-          double maxWidth = constraints.maxWidth > 600
-              ? 600
-              : constraints.maxWidth;
+          double maxWidth =
+              constraints.maxWidth > 600 ? 600 : constraints.maxWidth;
 
           return Center(
             child: SingleChildScrollView(
@@ -84,7 +89,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 child: Column(
                   children: [
-                  
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -121,8 +125,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
                           const SizedBox(height: 15),
 
+                          // ✅ ONLY CHANGE APPLIED HERE
                           Text(
-                            widget.name,
+                            formatName(widget.name),
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -191,9 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 60,
                       child: _item(Icons.lock, "Privacy Policy", () {}),
                     ),
-
                     const SizedBox(height: 10),
-
                     Container(
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 245, 244, 244),
@@ -226,9 +229,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 6),
-
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-
       child: ListTile(
         leading: Icon(icon, color: color),
         title: Text(title, style: TextStyle(color: color)),

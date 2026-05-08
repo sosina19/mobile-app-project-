@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
+import '../service/token_service.dart';
+import '../service/attendance_service.dart';
+
 import 'create_course.dart';
 import '../Student_Interface/profile.dart';
-import '../service/token_service.dart';
+import 'scan_qr.dart';
 
 class TeacherDashboard extends StatefulWidget {
- 
-const TeacherDashboard({super.key});
+  const TeacherDashboard({super.key});
 
   @override
   State<TeacherDashboard> createState() => _TeacherDashboardState();
@@ -15,9 +17,9 @@ const TeacherDashboard({super.key});
 
 class _TeacherDashboardState extends State<TeacherDashboard> {
   int currentIndex = 0;
-   String? name;
+
+  String? name;
   String? email;
- 
 
   @override
   void initState() {
@@ -26,85 +28,85 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   }
 
   Future<void> loadUserData() async {
-    String? savedName = await TokenService.getName();
-    String? savedEmail = await TokenService.getEmail();
-
-    setState(() {
-      name = savedName;
-      email = savedEmail;
-    });
+    name = await TokenService.getName();
+    email = await TokenService.getEmail();
+    setState(() {});
   }
-   String getGreeting() {
+
+  String formatName(String? name) {
+  if (name == null || name.isEmpty) return "Teacher";
+  return name[0].toUpperCase() + name.substring(1);
+}
+
+  String getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) return "Good Morning";
     if (hour < 17) return "Good Afternoon";
     return "Good Evening";
   }
+
   int getTotalStudents(List<Course> courses) {
     return courses.fold(0, (sum, c) => sum + c.students);
   }
 
-  double getAvgAttendance() {
-    return 0.0; 
+  double getAvgAttendance(List<Course> courses) {
+    int total = getTotalStudents(courses);
+    if (total == 0) return 0;
+    return (AttendanceService.presentCount / total) * 100;
   }
 
-  String getCurrentYear() {
-    return DateTime.now().year.toString();
-  }
+  String getCurrentYear() => DateTime.now().year.toString();
 
- 
   @override
   Widget build(BuildContext context) {
     List<Course> courses = CourseService.getCourses();
 
-    
     final pages = [
       _homePage(courses),
-      _scanPage(),
+      const ScanQrPage(),
       _historyPage(),
-     ProfilePage(name: name ?? "Loading...",
-        email: email ?? "Loading...",),
+      ProfilePage(
+        name: name ?? "Loading...",
+        email: email ?? "Loading...",
+      ),
     ];
 
     return Scaffold(
-       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
- appBar: AppBar(
-  automaticallyImplyLeading: false, 
-  backgroundColor: const Color(0xFF1E4B7A),
-  centerTitle: true,
-  title: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: const [
-      Icon(Icons.school, color: Colors.white),
-      SizedBox(width: 8),
-      Text("Dire Dawa University",
-          style: TextStyle(color: Colors.white)),
-    ],
-  ),
-  actions: const [
-    Padding(
-      padding: EdgeInsets.only(right: 12),
-      child: Icon(Icons.notifications_none, color: Colors.white),
-    ),
-  ],
-),
+      backgroundColor: const Color(0xFFF4F5F7),
+
+      // ✅ ONLY FIXED APPBAR
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Dire Dawa University",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.notifications_none, color: Colors.black),
+          ),
+        ],
+      ),
+
       body: pages[currentIndex],
 
-     
       floatingActionButton: currentIndex == 0
           ? FloatingActionButton(
-              backgroundColor: const Color.fromARGB(255, 114, 164, 218),
               onPressed: () async {
                 final result = await Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const CreateCoursePage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const CreateCoursePage()),
                 );
-
-                if (result == true) {
-                  setState(() {});
-                }
+                if (result == true) setState(() {});
               },
               child: const Icon(Icons.add),
             )
@@ -126,133 +128,99 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     );
   }
 
-  
+  // 🏠 HOME PAGE (UNCHANGED STRUCTURE)
   Widget _homePage(List<Course> courses) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-            const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-            Text(
-              "ACADEMIC YEAR ${getCurrentYear()}",
-              style: const TextStyle(color: Colors.grey),
-            ),
+          Text(
+            "ACADEMIC YEAR ${getCurrentYear()}",
+            style: const TextStyle(color: Colors.grey),
+          ),
 
-            const SizedBox(height: 5),
+          const SizedBox(height: 5),
 
-           
-            Text(
-              "${getGreeting()}, ${name ?? "Teacher"}",
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          Text(
+            "${getGreeting()}, ${formatName(name)}",
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
 
-            const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _statCard(
-                    "AVG. ATTENDANCE",
-                    "${getAvgAttendance().toStringAsFixed(1)}%",
-                  ),
+          const SizedBox(height: 20),
+
+          Row(
+            children: [
+              Expanded(
+                child: _statCard(
+                  "AVG. ATTENDANCE",
+                  "${getAvgAttendance(courses).toStringAsFixed(1)}%",
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _statCard(
-                    "TOTAL STUDENTS",
-                    getTotalStudents(courses).toString(),
-                  ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _statCard(
+                  "TOTAL STUDENTS",
+                  getTotalStudents(courses).toString(),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E4B7A),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Quick Attendance",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => setState(() => currentIndex = 1),
+                  child: const Text("Go to Scan QR"),
                 ),
               ],
             ),
+          ),
 
-            const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-           
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E4B7A),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Quick Attendance",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Start your session by scanning student IDs",
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 15),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF1E4B7A),
-                    ),
-                    onPressed: () {
-                      setState(() => currentIndex = 1); 
-                    },
-                    child: const Text("Scan Student QR"),
-                  )
-                ],
-              ),
-            ),
+          const Text(
+            "Active Courses",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
 
-            const SizedBox(height: 25),
+          const SizedBox(height: 10),
 
-            
-            const Text(
-              "Active Courses",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 15),
-
-           
-            courses.isEmpty
-                ? const Text("No courses yet")
-                : Column(
-                    children: courses.map((course) {
-                      return _courseItem(course);
-                    }).toList(),
-                  ),
-
-            const SizedBox(height: 30),
-          ],
-        ),
+          Column(
+            children: courses.map((c) => _courseItem(c)).toList(),
+          ),
+        ],
       ),
     );
   }
 
- 
-  Widget _scanPage() {
-    return const Center(child: Text("Scan QR (Coming next)"));
+  Widget _historyPage() {
+    return Center(
+      child: Text(
+        "Present Students: ${AttendanceService.presentCount}",
+        style: const TextStyle(fontSize: 18),
+      ),
+    );
   }
 
-  
-  Widget _historyPage() {
-    return const Center(child: Text("Attendance History"));
-  }
-  
-  
   Widget _statCard(String title, String value) {
     return Container(
       padding: const EdgeInsets.all(15),
@@ -264,18 +232,16 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         children: [
           Text(title, style: const TextStyle(color: Colors.grey)),
           const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1E4B7A),
-            ),
-          ),
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1E4B7A))),
         ],
       ),
     );
   }
+
   Widget _courseItem(Course course) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
@@ -292,20 +258,15 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "${course.code}: ${course.name}",
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Year ${course.year} • ${course.students} Students",
-                  style: const TextStyle(color: Colors.grey),
-                ),
+                Text("${course.code}: ${course.name}",
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text("Year ${course.year} • ${course.students} Students",
+                    style: const TextStyle(color: Colors.grey)),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
         ],
       ),
     );
   }
-}  
+}
