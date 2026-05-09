@@ -1,13 +1,41 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/course.dart';
 
 class CourseService {
-  static List<Course> courses = [];
+  static const String key = "courses";
 
-  static void addCourse(Course course) {
-    courses.add(course);
+  // 🔥 SAVE COURSE
+  static Future<void> addCourse(Course course) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> data = prefs.getStringList(key) ?? [];
+
+    data.add(jsonEncode(course.toJson()));
+
+    await prefs.setStringList(key, data);
   }
 
-  static List<Course> getCourses() {
-    return courses;
+  // 🔥 GET COURSES
+  static Future<List<Course>> getCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> data = prefs.getStringList(key) ?? [];
+
+    return data.map((item) => Course.fromJson(jsonDecode(item))).toList();
   }
-}     
+
+  // 🔥 DELETE COURSE
+  static Future<void> deleteCourse(String code) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> data = prefs.getStringList(key) ?? [];
+
+    data.removeWhere((item) {
+      final course = Course.fromJson(jsonDecode(item));
+      return course.code == code;
+    });
+
+    await prefs.setStringList(key, data);
+  }
+}

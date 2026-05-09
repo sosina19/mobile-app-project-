@@ -24,10 +24,8 @@ class _ScanQrPageState extends State<ScanQrPage> {
   final List<Map<String, String>> recentScans = [];
 
   Future<bool> _onBack() async => false;
-
-  void selectCourse() {
-    final courses = CourseService.getCourses();
-
+  Future<void> selectCourse() async {
+    final courses = await CourseService.getCourses();
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -43,26 +41,26 @@ class _ScanQrPageState extends State<ScanQrPage> {
                 title: Text(c.name),
                 subtitle: Text(c.code),
                 onTap: () {
-  setState(() {
-    selectedCourse = c;
-    scanningStarted = true;
+                  setState(() {
+                    selectedCourse = c;
+                    scanningStarted = true;
 
-    scannedEmails.clear();
-    recentScans.clear();
+                    scannedEmails.clear();
+                    recentScans.clear();
 
-    AttendanceService.reset();
-  });
+                    AttendanceService.reset();
+                  });
 
-  Navigator.pop(context);
+                  Navigator.pop(context);
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text("${c.code} selected"),
-      backgroundColor: const Color(0xFF1E4B7A),
-      duration: const Duration(seconds: 2),
-    ),
-  );
-},
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("${c.code} selected"),
+                      backgroundColor: const Color(0xFF1E4B7A),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
               );
             },
           ),
@@ -73,6 +71,9 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
   void handleScan(String raw) async {
     if (!scanningStarted || isProcessing) return;
+
+    // 🔥 FIX: prevent crash if no course selected
+    if (selectedCourse == null) return;
 
     isProcessing = true;
 
@@ -87,23 +88,24 @@ class _ScanQrPageState extends State<ScanQrPage> {
       if (AttendanceService.isPresent(email)) return;
 
       AttendanceService.markPresent(email);
+
       AttendanceService.saveAttendance(
-  name: name,
-  email: email,
-  courseCode: selectedCourse!.code,
-  courseName: selectedCourse!.name,
-);
+        name: name,
+        email: email,
+        courseCode: selectedCourse!.code,
+        courseName: selectedCourse!.name,
+      );
+
       scannedEmails.add(email);
 
-      recentScans.insert(0, {
-        "name": name,
-        "email": email,
-      });
+      recentScans.insert(0, {"name": name, "email": email});
 
       if (recentScans.length > 5) recentScans.removeLast();
 
       setState(() {});
-    } catch (_) {}
+    } catch (e) {
+      debugPrint("QR error: $e"); // 🔥 helpful debugging
+    }
 
     await Future.delayed(const Duration(seconds: 2));
     isProcessing = false;
@@ -114,8 +116,6 @@ class _ScanQrPageState extends State<ScanQrPage> {
     return WillPopScope(
       onWillPop: _onBack,
       child: Scaffold(
-
-       
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.white,
@@ -134,14 +134,13 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
         body: Column(
           children: [
-
             const SizedBox(height: 10),
 
             ElevatedButton(
               onPressed: selectCourse,
-              child: Text(selectedCourse == null
-                  ? "Choose Course"
-                  : "Change Course"),
+              child: Text(
+                selectedCourse == null ? "Choose Course" : "Change Course",
+              ),
             ),
 
             const SizedBox(height: 10),
@@ -153,7 +152,15 @@ class _ScanQrPageState extends State<ScanQrPage> {
                 onDetect: (capture) {
                   final bar = capture.barcodes.first;
                   if (bar.rawValue != null) {
-                    handleScan(bar.rawValue!);
+                    if (selectedCourse != null) {
+                      handleScan(bar.rawValue!);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please select a course first"),
+                        ),
+                      );
+                    }
                   }
                 },
               ),
@@ -171,20 +178,22 @@ class _ScanQrPageState extends State<ScanQrPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           "Recent Scans",
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         Text(
                           "${scannedEmails.length} Present",
                           style: const TextStyle(
-                              color: Color(0xFF1E4B7A),
-                              fontWeight: FontWeight.bold),
+                            color: Color(0xFF1E4B7A),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
@@ -199,8 +208,10 @@ class _ScanQrPageState extends State<ScanQrPage> {
                                 return ListTile(
                                   title: Text(s["name"]!),
                                   subtitle: Text(s["email"]!),
-                                  trailing: const Icon(Icons.check,
-                                      color: Colors.green),
+                                  trailing: const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  ),
                                 );
                               }).toList(),
                             ),

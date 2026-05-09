@@ -19,6 +19,8 @@ class TeacherDashboard extends StatefulWidget {
 class _TeacherDashboardState extends State<TeacherDashboard> {
   int currentIndex = 0;
 
+  List<Course> courses = []; // ✅ keep this
+
   String? name;
   String? email;
 
@@ -26,6 +28,13 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   void initState() {
     super.initState();
     loadUserData();
+    loadCourses(); // 🔥 FIXED (no direct assignment anymore)
+  }
+
+  // 🔥 FIX 1: async course loading
+  Future<void> loadCourses() async {
+    courses = await CourseService.getCourses();
+    setState(() {});
   }
 
   Future<void> loadUserData() async {
@@ -35,9 +44,9 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   }
 
   String formatName(String? name) {
-  if (name == null || name.isEmpty) return "Teacher";
-  return name[0].toUpperCase() + name.substring(1);
-}
+    if (name == null || name.isEmpty) return "Teacher";
+    return name[0].toUpperCase() + name.substring(1);
+  }
 
   String getGreeting() {
     final hour = DateTime.now().hour;
@@ -60,22 +69,16 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    List<Course> courses = CourseService.getCourses();
-
     final pages = [
       _homePage(courses),
       const ScanQrPage(),
       _historyPage(),
-      ProfilePage(
-        name: name ?? "Loading...",
-        email: email ?? "Loading...",
-      ),
+      ProfilePage(name: name ?? "Loading...", email: email ?? "Loading..."),
     ];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
 
-      
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -84,10 +87,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
           alignment: Alignment.centerLeft,
           child: Text(
             "Dire Dawa University",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
         actions: const [
@@ -107,7 +107,11 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                   context,
                   MaterialPageRoute(builder: (_) => const CreateCoursePage()),
                 );
-                if (result == true) setState(() {});
+
+                // 🔥 FIX 2: reload correctly after adding course
+                if (result == true) {
+                  loadCourses();
+                }
               },
               child: const Icon(Icons.add),
             )
@@ -120,7 +124,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: "Dashboard",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: "Scan"),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
@@ -129,14 +136,12 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     );
   }
 
-  
   Widget _homePage(List<Course> courses) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           const SizedBox(height: 20),
 
           Text(
@@ -205,9 +210,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
           const SizedBox(height: 10),
 
-          Column(
-            children: courses.map((c) => _courseItem(c)).toList(),
-          ),
+          Column(children: courses.map((c) => _courseItem(c)).toList()),
         ],
       ),
     );
@@ -228,11 +231,14 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         children: [
           Text(title, style: const TextStyle(color: Colors.grey)),
           const SizedBox(height: 10),
-          Text(value,
-              style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E4B7A))),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E4B7A),
+            ),
+          ),
         ],
       ),
     );
@@ -249,17 +255,39 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
       child: Row(
         children: [
           const Icon(Icons.book, color: Color(0xFF1E4B7A)),
+
           const SizedBox(width: 12),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${course.code}: ${course.name}",
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text("Year ${course.year} • ${course.students} Students",
-                    style: const TextStyle(color: Colors.grey)),
+                Text(
+                  "${course.code}: ${course.name}",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+
+                Text(
+                  "Year ${course.year} • ${course.students} Students",
+                  style: const TextStyle(color: Colors.grey),
+                ),
               ],
             ),
+          ),
+
+          // 🔥 DELETE BUTTON
+          IconButton(
+            icon: const Icon(Icons.delete, color: Colors.red),
+
+            onPressed: () async {
+              await CourseService.deleteCourse(course.code);
+
+              loadCourses();
+
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text("Course deleted")));
+            },
           ),
         ],
       ),

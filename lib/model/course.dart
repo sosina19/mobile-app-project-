@@ -14,4 +14,27 @@ class Course {
     required this.year,
     required this.semester,
   });
-}   
+
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "code": code,
+      "department": department,
+      "students": students,
+      "year": year,
+      "semester": semester,
+    };
+  }
+
+  // 🔥 convert json → object
+  factory Course.fromJson(Map<String, dynamic> json) {
+    return Course(
+      name: json["name"],
+      code: json["code"],
+      department: json["department"],
+      students: json["students"],
+      year: json["year"],
+      semester: json["semester"],
+    );
+  }
+}

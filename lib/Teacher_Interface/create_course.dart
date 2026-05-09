@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../model/course.dart';
 import '../service/course_service.dart';
+
 class CreateCoursePage extends StatefulWidget {
   const CreateCoursePage({super.key});
 
@@ -22,14 +23,13 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
   bool isLoading = false;
 
- 
-  void createCourse() {
+  Future<void> createCourse() async {
     if (!_formKey.currentState!.validate()) return;
 
     if (semester == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Select semester")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Select semester")));
       return;
     }
 
@@ -42,7 +42,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
       semester: semester!,
     );
 
-    CourseService.addCourse(course);
+    await CourseService.addCourse(course);
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -53,6 +53,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
     Navigator.pop(context, true);
   }
+
   @override
   void dispose() {
     nameController.dispose();
@@ -69,7 +70,10 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
         backgroundColor: const Color(0xFF1E4B7A),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Dire Dawa University", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "Dire Dawa University",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
 
       body: Center(
@@ -82,14 +86,10 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   const SizedBox(height: 10),
                   const Text(
                     "Create New Course",
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
 
                   const SizedBox(height: 8),
@@ -109,7 +109,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
                   const SizedBox(height: 20),
 
-                 
                   _label("COURSE CODE"),
                   _field(
                     controller: codeController,
@@ -123,9 +122,18 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                     value: department,
                     decoration: _decoration(),
                     items: const [
-                      DropdownMenuItem(value: "Software Engineering", child: Text("Software Engineering")),
-                      DropdownMenuItem(value: "IT", child: Text("Information Technology")),
-                      DropdownMenuItem(value: "Computer Science", child: Text("Computer Science")),
+                      DropdownMenuItem(
+                        value: "Software Engineering",
+                        child: Text("Software Engineering"),
+                      ),
+                      DropdownMenuItem(
+                        value: "IT",
+                        child: Text("Information Technology"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Computer Science",
+                        child: Text("Computer Science"),
+                      ),
                     ],
                     onChanged: (v) => setState(() => department = v),
                     validator: (v) => v == null ? "Select department" : null,
@@ -133,7 +141,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
                   const SizedBox(height: 20),
 
-                  
                   _label("NUMBER OF STUDENTS"),
                   _field(
                     controller: studentController,
@@ -147,7 +154,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                   ),
 
                   const SizedBox(height: 20),
-                
+
                   _label("YEAR"),
                   DropdownButtonFormField<String>(
                     value: year,
@@ -165,7 +172,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
                   const SizedBox(height: 20),
 
-                 
                   _label("SEMESTER"),
                   Row(
                     children: [
@@ -177,7 +183,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
 
                   const SizedBox(height: 30),
 
-                
                   SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -206,8 +211,6 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
     );
   }
 
- 
-
   Widget _label(String text) {
     return Text(
       text,
@@ -234,7 +237,9 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
         decoration: _decoration(hint: hint),
       ),
     );
-  }InputDecoration _decoration({String? hint}) {
+  }
+
+  InputDecoration _decoration({String? hint}) {
     return InputDecoration(
       hintText: hint,
       filled: true,
@@ -260,12 +265,10 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
         child: Center(
           child: Text(
             value == "1" ? "Sem I" : "Sem II",
-            style: TextStyle(
-              color: selected ? Colors.white : Colors.black,
-            ),
+            style: TextStyle(color: selected ? Colors.white : Colors.black),
           ),
         ),
       ),
     );
   }
-}   
+}

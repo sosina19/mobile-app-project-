@@ -8,13 +8,10 @@ class AttendanceHistoryPage extends StatefulWidget {
   const AttendanceHistoryPage({super.key});
 
   @override
-  State<AttendanceHistoryPage> createState() =>
-      _AttendanceHistoryPageState();
+  State<AttendanceHistoryPage> createState() => _AttendanceHistoryPageState();
 }
 
-class _AttendanceHistoryPageState
-    extends State<AttendanceHistoryPage> {
-
+class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   DateTime selectedDate = DateTime.now();
 
   Course? selectedCourse;
@@ -22,23 +19,27 @@ class _AttendanceHistoryPageState
   List<Map<String, dynamic>> records = [];
 
   @override
+  @override
   void initState() {
     super.initState();
 
-    final courses = CourseService.getCourses();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final courses = await CourseService.getCourses();
 
-    if (courses.isNotEmpty) {
-      selectedCourse = courses.first;
-      loadRecords();
-    }
+      if (courses.isNotEmpty) {
+        setState(() {
+          selectedCourse = courses.first;
+        });
+
+        loadRecords();
+      }
+    });
   }
 
   void loadRecords() {
-
     if (selectedCourse == null) return;
 
-    records =
-        AttendanceService.getAttendanceByCourseAndDate(
+    records = AttendanceService.getAttendanceByCourseAndDate(
       selectedCourse!.code,
       selectedDate,
     );
@@ -47,7 +48,6 @@ class _AttendanceHistoryPageState
   }
 
   Future<void> pickDate() async {
-
     final picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -56,32 +56,27 @@ class _AttendanceHistoryPageState
     );
 
     if (picked != null) {
-
       selectedDate = picked;
 
       loadRecords();
     }
   }
 
-  void chooseCourse() {
-
-    final courses = CourseService.getCourses();
+  Future<void> selectCourse() async {
+    final courses = await CourseService.getCourses();
 
     showModalBottomSheet(
       context: context,
       builder: (_) {
-
         return ListView.builder(
           itemCount: courses.length,
           itemBuilder: (_, index) {
-
             final course = courses[index];
 
             return ListTile(
               title: Text(course.name),
               subtitle: Text(course.code),
               onTap: () {
-
                 selectedCourse = course;
 
                 Navigator.pop(context);
@@ -96,7 +91,6 @@ class _AttendanceHistoryPageState
   }
 
   String formatDate(DateTime date) {
-
     List months = [
       "Jan",
       "Feb",
@@ -109,16 +103,14 @@ class _AttendanceHistoryPageState
       "Sep",
       "Oct",
       "Nov",
-      "Dec"
+      "Dec",
     ];
 
-    return
-        "${months[date.month - 1]} ${date.day}, ${date.year}";
+    return "${months[date.month - 1]} ${date.day}, ${date.year}";
   }
 
   @override
   Widget build(BuildContext context) {
-
     final currentYear = DateTime.now().year;
 
     return Padding(
@@ -127,27 +119,20 @@ class _AttendanceHistoryPageState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Text(
             "ACADEMIC YEAR $currentYear",
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
+            style: const TextStyle(color: Colors.grey),
           ),
 
           const SizedBox(height: 10),
 
           const Text(
             "Attendance History",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 20),
 
-          
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -156,21 +141,12 @@ class _AttendanceHistoryPageState
             ),
 
             child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-
                 Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    const Text(
-                      "DATE",
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
+                    const Text("DATE", style: TextStyle(color: Colors.grey)),
 
                     const SizedBox(height: 5),
 
@@ -197,7 +173,7 @@ class _AttendanceHistoryPageState
 
           const SizedBox(height: 15),
           GestureDetector(
-            onTap: chooseCourse,
+            onTap: selectCourse,
 
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -208,27 +184,20 @@ class _AttendanceHistoryPageState
               ),
 
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-
                       const Text(
                         "COURSE",
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                        style: TextStyle(color: Colors.grey),
                       ),
 
                       const SizedBox(height: 5),
 
                       Text(
-                        selectedCourse?.name ??
-                            "Choose Course",
+                        selectedCourse?.name ?? "Choose Course",
 
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -247,10 +216,8 @@ class _AttendanceHistoryPageState
           const SizedBox(height: 20),
 
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-
               const Text(
                 "STUDENT REGISTRY",
                 style: TextStyle(
@@ -267,15 +234,12 @@ class _AttendanceHistoryPageState
 
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20),
                 ),
 
                 child: Text(
                   "${records.length} Records Found",
-                  style: const TextStyle(
-                    color: Color(0xFF1E4B7A),
-                  ),
+                  style: const TextStyle(color: Color(0xFF1E4B7A)),
                 ),
               ),
             ],
@@ -285,60 +249,40 @@ class _AttendanceHistoryPageState
 
           Expanded(
             child: records.isEmpty
-                ? const Center(
-                    child: Text(
-                      "No attendance records",
-                    ),
-                  )
+                ? const Center(child: Text("No attendance records"))
                 : ListView.builder(
                     itemCount: records.length,
                     itemBuilder: (_, index) {
-
                       final student = records[index];
 
                       return Container(
-                        margin:
-                            const EdgeInsets.only(
-                          bottom: 12,
-                        ),
+                        margin: const EdgeInsets.only(bottom: 12),
 
-                        padding:
-                            const EdgeInsets.all(14),
+                        padding: const EdgeInsets.all(14),
 
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius:
-                              BorderRadius.circular(
-                                  14),
+                          borderRadius: BorderRadius.circular(14),
                         ),
 
                         child: Row(
                           children: [
-
                             CircleAvatar(
                               radius: 28,
-                              backgroundColor:
-                                  Colors.grey.shade300,
-                              child: const Icon(
-                                Icons.person,
-                              ),
+                              backgroundColor: Colors.grey.shade300,
+                              child: const Icon(Icons.person),
                             ),
 
                             const SizedBox(width: 15),
 
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-
                                   Text(
                                     student["name"],
-                                    style:
-                                        const TextStyle(
-                                      fontWeight:
-                                          FontWeight.bold,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
                                   ),
@@ -347,36 +291,28 @@ class _AttendanceHistoryPageState
 
                                   Text(
                                     student["email"],
-                                    style:
-                                        const TextStyle(
-                                      color: Colors.grey,
-                                    ),
+                                    style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],
                               ),
                             ),
 
                             Container(
-                              padding:
-                                  const EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: 14,
                                 vertical: 8,
                               ),
 
                               decoration: BoxDecoration(
-                                color:
-                                    Colors.green.shade100,
-                                borderRadius:
-                                    BorderRadius.circular(
-                                        20),
+                                color: Colors.green.shade100,
+                                borderRadius: BorderRadius.circular(20),
                               ),
 
                               child: const Text(
                                 "PRESENT",
                                 style: TextStyle(
                                   color: Colors.green,
-                                  fontWeight:
-                                      FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),

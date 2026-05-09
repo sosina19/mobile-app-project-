@@ -35,7 +35,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   void initState() {
     super.initState();
-      loadEmail();
+    loadEmail();
 
     pages = [
       _homePage(),
@@ -45,14 +45,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
       ProfilePage(name: widget.name.toUpperCase(), email: widget.email),
     ];
   }
-  
-  Future<void> loadEmail() async {
-  String? savedEmail = await TokenService.getEmail();
 
-  setState(() {
-    email = savedEmail;
-  });
-} 
+  Future<void> loadEmail() async {
+    String? savedEmail = await TokenService.getEmail();
+
+    setState(() {
+      email = savedEmail;
+    });
+  }
 
   Future<void> logout() async {
     await TokenService.clear();
@@ -86,32 +86,28 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  
   Widget _homePage() {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
       appBar: AppBar(
-         automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF1E4B7A),
         centerTitle: true,
-          title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          Icon(Icons.school, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            "Dire Dawa University",
-            style: TextStyle(color: Colors.white),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.school, color: Colors.white),
+            SizedBox(width: 8),
+            Text("Dire Dawa University", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.only(right: 12),
+            child: Icon(Icons.notifications_none, color: Colors.white),
           ),
         ],
       ),
-       actions: const [
-    Padding(
-      padding: EdgeInsets.only(right: 12),
-      child: Icon(Icons.notifications_none, color: Colors.white),
-    ),
-  ],
- ),
 
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -128,7 +124,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                   
                     const Center(
                       child: Text(
                         "Welcome To Student Dashboard",
@@ -143,7 +138,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                   
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
@@ -191,7 +185,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
@@ -240,7 +233,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
                     const SizedBox(height: 20),
 
-                    
                     const Text(
                       "Enrolled Courses",
                       style: TextStyle(
@@ -265,7 +257,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  
   Widget _courseItem(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
