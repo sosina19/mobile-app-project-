@@ -81,7 +81,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+       backgroundColor:const Color(0xFF1E4B7A),
         elevation: 0,
         title: const Align(
           alignment: Alignment.centerLeft,
