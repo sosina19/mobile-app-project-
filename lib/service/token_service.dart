@@ -47,4 +47,20 @@ class TokenService {
   static Future<void> clear() async {
     await _storage.deleteAll();
   }
+
+  static Future<void> saveYear(String year) async {
+  await _storage.write(key: "year", value: year);
+}
+
+static Future<String?> getYear() async {
+  return await _storage.read(key: "year");
+}
+
+static Future<void> saveSemester(String semester) async {
+  await _storage.write(key: "semester", value: semester);
+}
+
+static Future<String?> getSemester() async {
+  return await _storage.read(key: "semester");
+}
 }

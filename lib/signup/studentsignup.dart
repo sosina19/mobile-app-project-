@@ -357,7 +357,7 @@ class _StudentsignupState extends State<Studentsignup> {
             },
             validator: (v) => v == null ? "Select semester" : null,
           ),
-
+           const SizedBox(height: 20),
                   label("PHONE"),
                   textField(
                     controller: phoneController,
