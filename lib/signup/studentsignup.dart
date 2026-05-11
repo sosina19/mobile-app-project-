@@ -24,6 +24,8 @@ class _StudentsignupState extends State<Studentsignup> {
   final phoneController = TextEditingController();
 
   String? selectedDepartment;
+  String? selectedYear;
+ String? selectedSemester;
 
   @override
   void dispose() {
@@ -61,8 +63,11 @@ class _StudentsignupState extends State<Studentsignup> {
               "password": passwordController.text.trim(),
               "studId": studentIdController.text.trim(),
               "department": selectedDepartment ?? "",
+              "year": selectedYear ?? "",
+              "semester": selectedSemester ?? "",
               "phoneNo": phoneController.text.trim(),
               "role": "Student"
+            
             }),
           )
           .timeout(const Duration(seconds: 40));
@@ -304,6 +309,54 @@ class _StudentsignupState extends State<Studentsignup> {
                   ),
 
                   const SizedBox(height: 20),
+                  label("YEAR"),
+                DropdownButtonFormField<String>(
+                  value: selectedYear,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.date_range),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(value: "1", child: Text("Year 1")),
+                    DropdownMenuItem(value: "2", child: Text("Year 2")),
+                    DropdownMenuItem(value: "3", child: Text("Year 3")),
+                    DropdownMenuItem(value: "4", child: Text("Year 4")),
+                    DropdownMenuItem(value: "5", child: Text("Year 5")),
+                  ],
+                  onChanged: (value) {
+                    setState(() => selectedYear = value);
+                  },
+                  validator: (v) => v == null ? "Select year" : null,
+                ),
+
+                const SizedBox(height: 20),
+
+          label("SEMESTER"),
+          DropdownButtonFormField<String>(
+            value: selectedSemester,
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.event_note),
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            items: const [
+              DropdownMenuItem(value: "1", child: Text("Semester 1")),
+              DropdownMenuItem(value: "2", child: Text("Semester 2")),
+            ],
+            onChanged: (value) {
+              setState(() => selectedSemester = value);
+            },
+            validator: (v) => v == null ? "Select semester" : null,
+          ),
 
                   label("PHONE"),
                   textField(
