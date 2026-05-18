@@ -134,6 +134,22 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                         value: "Computer Science",
                         child: Text("Computer Science"),
                       ),
+                       DropdownMenuItem(
+                        value: "architecture",
+                        child: Text("Architecture"),
+                      ),
+                      DropdownMenuItem(
+                        value: "socialscience",
+                        child: Text("Social Science"),
+                      ),
+                      DropdownMenuItem(
+                        value: "electrical engineering",
+                        child: Text("Electrical Engineering"),
+                      ),
+                      DropdownMenuItem(
+                        value: "Applied science",
+                        child: Text("Applied Science"),
+                      ),
                     ],
                     onChanged: (v) => setState(() => department = v),
                     validator: (v) => v == null ? "Select department" : null,

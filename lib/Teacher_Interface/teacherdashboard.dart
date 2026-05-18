@@ -19,7 +19,7 @@ class TeacherDashboard extends StatefulWidget {
 class _TeacherDashboardState extends State<TeacherDashboard> {
   int currentIndex = 0;
 
-  List<Course> courses = []; // ✅ keep this
+  List<Course> courses = []; 
 
   String? name;
   String? email;
@@ -28,10 +28,10 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   void initState() {
     super.initState();
     loadUserData();
-    loadCourses(); // 🔥 FIXED (no direct assignment anymore)
+    loadCourses(); 
   }
 
-  // 🔥 FIX 1: async course loading
+
   Future<void> loadCourses() async {
     courses = await CourseService.getCourses();
     setState(() {});
@@ -108,7 +108,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
                   MaterialPageRoute(builder: (_) => const CreateCoursePage()),
                 );
 
-                // 🔥 FIX 2: reload correctly after adding course
+      
                 if (result == true) {
                   loadCourses();
                 }
@@ -275,7 +275,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
             ),
           ),
 
-          // 🔥 DELETE BUTTON
+          
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
 

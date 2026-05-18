@@ -72,7 +72,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
   void handleScan(String raw) async {
     if (!scanningStarted || isProcessing) return;
 
-    // 🔥 FIX: prevent crash if no course selected
+   
     if (selectedCourse == null) return;
 
     isProcessing = true;
@@ -104,7 +104,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
       setState(() {});
     } catch (e) {
-      debugPrint("QR error: $e"); // 🔥 helpful debugging
+      debugPrint("QR error: $e"); 
     }
 
     await Future.delayed(const Duration(seconds: 2));

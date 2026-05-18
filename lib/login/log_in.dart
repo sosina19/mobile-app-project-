@@ -183,10 +183,10 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 20),
 
                 const Text(
-                  "Student Portal",
+                  "Portal access for students and faculity\nmembers",
                   style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    height: 1.5,
                     color: Color(0xFF111827),
                   ),
                 ),
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text(
-                      "Already have an account? ",
+                      "Don't have an account? ",
                       style: TextStyle(color: Colors.black54),
                     ),
                     GestureDetector(

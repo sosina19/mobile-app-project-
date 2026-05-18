@@ -126,7 +126,7 @@ class _StudentsignupState extends State<Studentsignup> {
               key: _formKey,
               child: Column(
                 children: [
-                  // TOP BAR
+
                   SafeArea(
                     child: Container(
                       width: double.infinity,

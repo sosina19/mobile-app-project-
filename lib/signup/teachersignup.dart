@@ -121,7 +121,7 @@ class _TeacherSignupPageState extends State<TeacherSignupPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  // TOP BAR
+                 
                   SafeArea(
                     child: Container(
                       width: double.infinity,
