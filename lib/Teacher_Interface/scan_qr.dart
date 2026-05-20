@@ -93,9 +93,10 @@ String selectedCourse = "";
     // SEND TO BACKEND (THIS IS THE REAL FIX)
     await AttendanceService.markAttendance(
       userId: id,
+      name: name,
       course: selectedCourse,
       status: "present",
-       name: name,
+       
     );
 
     recentScans.insert(0, {
@@ -156,22 +157,35 @@ String selectedCourse = "";
               flex: 4,
               child: MobileScanner(
                 controller: controller,
-                onDetect: (capture) {
-            final bar = capture.barcodes.first;
+               onDetect: (capture) async {
+                  final barcodes = capture.barcodes;
 
-            if (bar.rawValue != null) {
-             if (!_courseWarningShown) {
-                  _courseWarningShown = true;
+                  if (barcodes.isEmpty) return;
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Please enter a course first"),
-                    ),
-                  );
-                }
-                return;
-              }    
-          },
+                  final raw = barcodes.first.rawValue;
+
+                  if (raw == null || raw.isEmpty) return;
+
+                  // NO COURSE SELECTED
+                  if (selectedCourse.isEmpty) {
+                    if (!_courseWarningShown) {
+                      _courseWarningShown = true;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Please enter a course first"),
+                        ),
+                      );
+                    }
+
+                    return;
+                  }
+
+                  // COURSE EXISTS
+                  _courseWarningShown = false;
+
+                  await handleScan(raw);
+                },
               ),
             ),
 
