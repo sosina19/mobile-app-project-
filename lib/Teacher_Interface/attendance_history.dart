@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:http/http.dart' as http;
 import '../model/course.dart';
-import '../service/course_service.dart';
 import '../service/attendance_service.dart';
 
 class AttendanceHistoryPage extends StatefulWidget {
@@ -14,39 +13,44 @@ class AttendanceHistoryPage extends StatefulWidget {
 class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   DateTime selectedDate = DateTime.now();
 
-  Course? selectedCourse;
+  String selectedCourse = "";
 
   List<Map<String, dynamic>> records = [];
 
   @override
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final courses = await CourseService.getCourses();
+  Future.microtask(() {
+    selectedCourse = "";
+    records = [];
+  });
+}
 
-      if (courses.isNotEmpty) {
-        setState(() {
-          selectedCourse = courses.first;
-        });
+ Future<void> loadRecords() async {
+    if (selectedCourse.isEmpty) return;
 
-        loadRecords();
-      }
-    });
-  }
+  try {
+    final data = await AttendanceService.getAttendance();
 
-  void loadRecords() {
-    if (selectedCourse == null) return;
+    final List<Map<String, dynamic>> typedData =
+        List<Map<String, dynamic>>.from(data);
 
-    records = AttendanceService.getAttendanceByCourseAndDate(
-      selectedCourse!.code,
-      selectedDate,
-    );
+    records = typedData.where((item) {
+      final date = DateTime.parse(item["attendanceDate"]);
+
+      return item["Course"] == selectedCourse &&
+          date.year == selectedDate.year &&
+          date.month == selectedDate.month &&
+          date.day == selectedDate.day;
+    }).toList();
 
     setState(() {});
+  } catch (e) {
+    debugPrint("Error loading attendance: $e");
   }
-
+}
   Future<void> pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -56,37 +60,50 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
     );
 
     if (picked != null) {
-      selectedDate = picked;
+      setState(() {
+        selectedDate = picked;
+      });
 
       loadRecords();
     }
   }
 
-  Future<void> selectCourse() async {
-    final courses = await CourseService.getCourses();
+  Future<void> enterCourse() async {
+    final controller = TextEditingController();
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      builder: (_) {
-        return ListView.builder(
-          itemCount: courses.length,
-          itemBuilder: (_, index) {
-            final course = courses[index];
+      builder: (_) => AlertDialog(
+        title: const Text("Enter Course"),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            hintText: "e.g. Software Engineering",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final course = controller.text.trim();
 
-            return ListTile(
-              title: Text(course.name),
-              subtitle: Text(course.code),
-              onTap: () {
+              if (course.isEmpty) return;
+
+              setState(() {
                 selectedCourse = course;
+                   records = [];
+              });
 
-                Navigator.pop(context);
-
-                loadRecords();
-              },
-            );
-          },
-        );
-      },
+              Navigator.pop(context);
+              loadRecords();
+            },
+            child: const Text("Apply"),
+          ),
+        ],
+      ),
     );
   }
 
@@ -173,7 +190,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
 
           const SizedBox(height: 15),
           GestureDetector(
-            onTap: selectCourse,
+            onTap: enterCourse,
 
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -183,22 +200,19 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                 borderRadius: BorderRadius.circular(12),
               ),
 
-              child: Row(
+               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "COURSE",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-
+                      const Text("COURSE",
+                          style: TextStyle(color: Colors.grey)),
                       const SizedBox(height: 5),
-
                       Text(
-                        selectedCourse?.name ?? "Choose Course",
-
+                        selectedCourse.isEmpty
+                            ? "Enter Course"
+                            : selectedCourse,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -206,8 +220,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                       ),
                     ],
                   ),
-
-                  const Icon(Icons.arrow_drop_down),
+                  const Icon(Icons.edit),
                 ],
               ),
             ),
@@ -280,7 +293,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    student["name"],
+                                    student["name"] ?? "",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -290,7 +303,7 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                   const SizedBox(height: 4),
 
                                   Text(
-                                    student["email"],
+                                    student["email"] ?? "",
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],

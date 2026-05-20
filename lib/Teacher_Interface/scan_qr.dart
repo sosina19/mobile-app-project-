@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-
+import 'package:http/http.dart' as http;
 import '../model/course.dart';
 import '../service/course_service.dart';
 import '../service/attendance_service.dart';
@@ -15,8 +15,9 @@ class ScanQrPage extends StatefulWidget {
 
 class _ScanQrPageState extends State<ScanQrPage> {
   final MobileScannerController controller = MobileScannerController();
-
-  Course? selectedCourse;
+  final TextEditingController courseController = TextEditingController();
+  
+String selectedCourse = "";
   bool scanningStarted = false;
   bool isProcessing = false;
 
@@ -24,96 +25,95 @@ class _ScanQrPageState extends State<ScanQrPage> {
   final List<Map<String, String>> recentScans = [];
 
   Future<bool> _onBack() async => false;
-  Future<void> selectCourse() async {
-    final courses = await CourseService.getCourses();
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Choose Course"),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: courses.length,
-            itemBuilder: (_, i) {
-              final c = courses[i];
-              return ListTile(
-                title: Text(c.name),
-                subtitle: Text(c.code),
-                onTap: () {
-                  setState(() {
-                    selectedCourse = c;
-                    scanningStarted = true;
+ Future<void> selectCourse() async {
+  final TextEditingController controller = TextEditingController();
 
-                    scannedid.clear();
-                    recentScans.clear();
-
-                    AttendanceService.reset();
-                  });
-
-                  Navigator.pop(context);
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text("${c.code} selected"),
-                      backgroundColor: const Color(0xFF1E4B7A),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+  showDialog(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text("Enter Course"),
+      content: TextField(
+        controller: controller,
+        decoration: const InputDecoration(
+          hintText: "e.g. Mathematics 101",
         ),
       ),
-    );
-  }
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text("Cancel"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final course = controller.text.trim();
 
+            if (course.isEmpty) return;
+
+            setState(() {
+              selectedCourse = course;
+              scanningStarted = true;
+
+              scannedid.clear();
+              recentScans.clear();
+
+            });
+
+            Navigator.pop(context);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("$course selected"),
+                backgroundColor: const Color(0xFF1E4B7A),
+              ),
+            );
+          },
+          child: const Text("Start"),
+        ),
+      ],
+    ),
+  );
+}
   void handleScan(String raw) async {
-    if (!scanningStarted || isProcessing) return;
+  if (!scanningStarted || isProcessing) return;
 
-   
-    if (selectedCourse == null) return;
+  isProcessing = true;
 
-    isProcessing = true;
-
-    try {
-      final data = jsonDecode(raw);
+  try {
+    final data = jsonDecode(raw);
     final id = data["id"] ?? "";
-      final name = data["name"] ?? "Unknown";
-  
+    final name = data["name"] ?? "Unknown";
 
-      if (id.isEmpty) return;
+    if (id.isEmpty) return;
 
-     // prevent duplicate scan in UI
-if (scannedid.contains(id)) return;
+    // prevent duplicate scan in UI
+    if (scannedid.contains(id)) return;
 
-// prevent duplicate in service
-if (AttendanceService.isPresent(id)) return;
+    scannedid.add(id);
 
-AttendanceService.markPresent(id);
+    // SEND TO BACKEND (THIS IS THE REAL FIX)
+    await AttendanceService.markAttendance(
+      userId: id,
+      course: selectedCourse,
+      status: "present",
+    );
 
-      AttendanceService.saveAttendance(
-        name: name,
-        id: id,
-        courseCode: selectedCourse!.code,
-        courseName: selectedCourse!.name,
-      );
+    recentScans.insert(0, {
+      "name": name,
+      "id": id,
+    });
 
-      scannedid.add(id);
-
-      recentScans.insert(0, {"name": name, "id": id});
-
-      if (recentScans.length > 5) recentScans.removeLast();
-
-      setState(() {});
-    } catch (e) {
-      debugPrint("QR error: $e"); 
+    if (recentScans.length > 5) {
+      recentScans.removeLast();
     }
 
-    await Future.delayed(const Duration(seconds: 2));
-    isProcessing = false;
+    setState(() {});
+  } catch (e) {
+    debugPrint("QR error: $e");
   }
+
+  await Future.delayed(const Duration(seconds: 2));
+  isProcessing = false;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -140,12 +140,14 @@ AttendanceService.markPresent(id);
           children: [
             const SizedBox(height: 10),
 
-            ElevatedButton(
-              onPressed: selectCourse,
-              child: Text(
-                selectedCourse == null ? "Choose Course" : "Change Course",
-              ),
+           ElevatedButton(
+            onPressed: selectCourse,
+            child: Text(
+              selectedCourse.isEmpty
+                  ? "Enter Course"
+                  : "Course: $selectedCourse",
             ),
+          ),
 
             const SizedBox(height: 10),
 
@@ -154,19 +156,21 @@ AttendanceService.markPresent(id);
               child: MobileScanner(
                 controller: controller,
                 onDetect: (capture) {
-                  final bar = capture.barcodes.first;
-                  if (bar.rawValue != null) {
-                    if (selectedCourse != null) {
-                      handleScan(bar.rawValue!);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Please select a course first"),
-                        ),
-                      );
-                    }
-                  }
-                },
+            final bar = capture.barcodes.first;
+
+            if (bar.rawValue != null) {
+              if (selectedCourse.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Please enter a course first"),
+                  ),
+                );
+                return;
+              }
+
+              handleScan(bar.rawValue!);
+            }
+          },
               ),
             ),
 

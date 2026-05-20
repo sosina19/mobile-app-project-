@@ -3,7 +3,7 @@ import 'package:mobile_app/Teacher_Interface/attendance_history.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
 import '../service/token_service.dart';
-import '../service/attendance_service.dart';
+
 
 import 'create_course.dart';
 import '../Student_Interface/profile.dart';
@@ -59,12 +59,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     return courses.fold(0, (sum, c) => sum + c.students);
   }
 
-  double getAvgAttendance(List<Course> courses) {
-    int total = getTotalStudents(courses);
-    if (total == 0) return 0;
-    return (AttendanceService.presentCount / total) * 100;
-  }
-
+ 
   String getCurrentYear() => DateTime.now().year.toString();
 
   @override
@@ -158,25 +153,6 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
 
           const SizedBox(height: 20),
 
-          Row(
-            children: [
-              Expanded(
-                child: _statCard(
-                  "AVG. ATTENDANCE",
-                  "${getAvgAttendance(courses).toStringAsFixed(1)}%",
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _statCard(
-                  "TOTAL STUDENTS",
-                  getTotalStudents(courses).toString(),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 20),
 
           Container(
             width: double.infinity,
