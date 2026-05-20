@@ -6,13 +6,13 @@ class AttendanceService {
   static final List<Map<String, dynamic>> _attendanceHistory = [];
 
 
-  static void markPresent(String email) {
-    _presentStudents.add(email);
+  static void markPresent(String id) {
+    _presentStudents.add(id);
   }
 
  
-  static bool isPresent(String email) {
-    return _presentStudents.contains(email);
+  static bool isPresent(String id) {
+    return _presentStudents.contains(id);
   }
 
   static int get presentCount => _presentStudents.length;
@@ -24,14 +24,14 @@ class AttendanceService {
 
 
   static void saveAttendance({
+    required String id,
     required String name,
-    required String email,
     required String courseCode,
     required String courseName,
   }) {
     _attendanceHistory.add({
       "name": name,
-      "email": email,
+      "id": id,
       "courseCode": courseCode,
       "courseName": courseName,
       "present": true,

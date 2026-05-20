@@ -26,7 +26,7 @@ class Course {
     };
   }
 
-  // 🔥 convert json → object
+  // convert json → object
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
       name: json["name"],

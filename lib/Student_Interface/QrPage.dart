@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class QrPage extends StatelessWidget {
+  final String id;
   final String name;
-  final String email;
 
-  const QrPage({super.key, required this.name, required this.email});
+  const QrPage({super.key, required this.id, required this.name});
 
   @override
   Widget build(BuildContext context) {
-    final String qrData = "$name|$email";
+    final String qrData = '{"id":"$id","name":"$name"}';
 
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 228, 225, 225),
@@ -123,18 +123,7 @@ class QrPage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      email,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Color.fromARGB(
-                                          179,
-                                          148,
-                                          148,
-                                          148,
-                                        ),
-                                      ),
-                                    ),
+                                   
                                   ],
                                 ),
                               ),

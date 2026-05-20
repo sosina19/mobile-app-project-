@@ -12,9 +12,10 @@ class StudentDashboard extends StatefulWidget {
   final String name;
   final String email;
   final String role;
-
+   final String serverId;
   const StudentDashboard({
     super.key,
+    required this.serverId,
     required this.studentId,
     required this.name,
     required this.email,
@@ -41,7 +42,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
       _homePage(),
       const CoursePage(),
       const HistoryPage(),
-      QrPage(name: widget.name.toUpperCase(), email: widget.email),
+      QrPage(name: widget.name.toUpperCase(), id: widget.serverId),
       ProfilePage(name: widget.name.toUpperCase(), email: widget.email),
     ];
   }

@@ -53,6 +53,7 @@ class _SplashState extends State<Splash> {
         context,
         MaterialPageRoute(
           builder: (_) => StudentDashboard(
+             serverId: id?? "",
             studentId: id ?? "",
             name: name ?? "",
             email: email ?? "",

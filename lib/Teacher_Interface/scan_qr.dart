@@ -20,7 +20,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
   bool scanningStarted = false;
   bool isProcessing = false;
 
-  final Set<String> scannedEmails = {};
+  final Set<String> scannedid = {};
   final List<Map<String, String>> recentScans = [];
 
   Future<bool> _onBack() async => false;
@@ -45,7 +45,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
                     selectedCourse = c;
                     scanningStarted = true;
 
-                    scannedEmails.clear();
+                    scannedid.clear();
                     recentScans.clear();
 
                     AttendanceService.reset();
@@ -79,26 +79,30 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
     try {
       final data = jsonDecode(raw);
-
+    final id = data["id"] ?? "";
       final name = data["name"] ?? "Unknown";
-      final email = data["email"] ?? "";
+  
 
-      if (email.isEmpty) return;
+      if (id.isEmpty) return;
 
-      if (AttendanceService.isPresent(email)) return;
+     // prevent duplicate scan in UI
+if (scannedid.contains(id)) return;
 
-      AttendanceService.markPresent(email);
+// prevent duplicate in service
+if (AttendanceService.isPresent(id)) return;
+
+AttendanceService.markPresent(id);
 
       AttendanceService.saveAttendance(
         name: name,
-        email: email,
+        id: id,
         courseCode: selectedCourse!.code,
         courseName: selectedCourse!.name,
       );
 
-      scannedEmails.add(email);
+      scannedid.add(id);
 
-      recentScans.insert(0, {"name": name, "email": email});
+      recentScans.insert(0, {"name": name, "id": id});
 
       if (recentScans.length > 5) recentScans.removeLast();
 
@@ -189,7 +193,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
                           ),
                         ),
                         Text(
-                          "${scannedEmails.length} Present",
+                          "${scannedid.length} Present",
                           style: const TextStyle(
                             color: Color(0xFF1E4B7A),
                             fontWeight: FontWeight.bold,
@@ -207,7 +211,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
                               children: recentScans.map((s) {
                                 return ListTile(
                                   title: Text(s["name"]!),
-                                  subtitle: Text(s["email"]!),
+                                  subtitle: Text(s["id"]!),
                                   trailing: const Icon(
                                     Icons.check,
                                     color: Colors.green,

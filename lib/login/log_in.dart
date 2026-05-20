@@ -96,7 +96,8 @@ class _LoginPageState extends State<LoginPage> {
             context,
             MaterialPageRoute(
               builder: (_) => StudentDashboard(
-                studentId: user["id"].toString(),
+                serverId: user["id"].toString(),  
+                studentId: user["studId"].toString(),
                 name: user["fullname"],
                 email: user["email"],
                 role: role,
