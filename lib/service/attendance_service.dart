@@ -10,12 +10,14 @@ class AttendanceService {
     required String userId,
     required String course,
     required String status,
+      required String name,
   }) async {
     await http.post(
       Uri.parse(baseUrl),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "userId": userId,
+         "name": name,
         "Course": course,
         "Status": status,
         "attendanceDate": DateTime.now().toIso8601String(),

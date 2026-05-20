@@ -20,7 +20,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
 String selectedCourse = "";
   bool scanningStarted = false;
   bool isProcessing = false;
-
+  bool _courseWarningShown = false;
   final Set<String> scannedid = {};
   final List<Map<String, String>> recentScans = [];
 
@@ -55,7 +55,7 @@ String selectedCourse = "";
 
               scannedid.clear();
               recentScans.clear();
-
+              _courseWarningShown = false;
             });
 
             Navigator.pop(context);
@@ -95,6 +95,7 @@ String selectedCourse = "";
       userId: id,
       course: selectedCourse,
       status: "present",
+       name: name,
     );
 
     recentScans.insert(0, {
@@ -159,17 +160,17 @@ String selectedCourse = "";
             final bar = capture.barcodes.first;
 
             if (bar.rawValue != null) {
-              if (selectedCourse.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text("Please enter a course first"),
-                  ),
-                );
-                return;
-              }
+             if (!_courseWarningShown) {
+                  _courseWarningShown = true;
 
-              handleScan(bar.rawValue!);
-            }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Please enter a course first"),
+                    ),
+                  );
+                }
+                return;
+              }    
           },
               ),
             ),

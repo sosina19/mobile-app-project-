@@ -293,7 +293,7 @@ void initState() {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    student["name"] ?? "",
+                                    (student["name"] ?? "Unknown Student").toString(),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
