@@ -153,8 +153,9 @@ String selectedCourse = "";
 
             const SizedBox(height: 10),
 
-            Expanded(
-              flex: 4,
+            SizedBox(
+              height: 250,
+              width: 250,
               child: MobileScanner(
                 controller: controller,
                onDetect: (capture) async {
