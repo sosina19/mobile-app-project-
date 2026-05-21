@@ -286,7 +286,7 @@ void initState() {
                               child: const Icon(Icons.person),
                             ),
 
-                            const SizedBox(width: 15),
+                           const SizedBox(width: 15),
 
                             Expanded(
                               child: Column(
