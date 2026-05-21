@@ -184,7 +184,7 @@ String selectedCourse = "";
                   // COURSE EXISTS
                   _courseWarningShown = false;
 
-                  await handleScan(raw);
+                  handleScan(raw);
                 },
               ),
             ),
