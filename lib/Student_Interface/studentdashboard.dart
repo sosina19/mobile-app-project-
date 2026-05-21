@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/login/log_in.dart';
 import 'package:mobile_app/service/token_service.dart';
-
-import 'coursesPage.dart';
 import 'QrPage.dart';
 import 'historyPage.dart';
 import 'profile.dart';
@@ -40,8 +38,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
     pages = [
       _homePage(),
-      const CoursePage(),
-      const HistoryPage(),
+      HistoryPage( studentId: widget.serverId),
       QrPage(name: widget.name.toUpperCase(), id: widget.serverId),
       ProfilePage(name: widget.name.toUpperCase(), email: widget.email),
     ];
@@ -78,7 +75,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Courses'),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'QR'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
