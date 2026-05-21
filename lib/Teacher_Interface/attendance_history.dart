@@ -267,7 +267,7 @@ void initState() {
                     itemCount: records.length,
                     itemBuilder: (_, index) {
                       final student = records[index];
-
+                      debugPrint(student.toString());
                       return Container(
                         margin: const EdgeInsets.only(bottom: 12),
 
@@ -293,7 +293,7 @@ void initState() {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    (student["name"] ?? "Unknown Student").toString(),
+                                    (student["user"]?["fullName"]  ?? "Unknown Student").toString(),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
@@ -303,7 +303,7 @@ void initState() {
                                   const SizedBox(height: 4),
 
                                   Text(
-                                    student["email"] ?? "",
+                                  student["user"]?["studId"] ?? "",
                                     style: const TextStyle(color: Colors.grey),
                                   ),
                                 ],
