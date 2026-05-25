@@ -19,6 +19,10 @@ class _HistoryPageState extends State<HistoryPage> {
   String selectedCourse = "";
   String statusMessage = "";
   bool loading = false;
+  int presentCount = 0;
+int absentCount = 0;
+double attendancePercentage = 0;
+bool showReport = false;
 
   Future<void> pickDate() async {
     final picked = await showDatePicker(
@@ -72,7 +76,7 @@ class _HistoryPageState extends State<HistoryPage> {
     );
   }
 
-  // MODE 1: DAILY CHECK
+  //  DAILY CHECK
   Future<void> checkAttendance() async {
     if (selectedCourse.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -81,10 +85,11 @@ class _HistoryPageState extends State<HistoryPage> {
       return;
     }
 
-    setState(() {
-      loading = true;
-      statusMessage = "";
-    });
+   setState(() {
+  loading = true;
+  statusMessage = "";
+  showReport = false;
+});
 
     try {
       final data = await AttendanceService.getAttendance();
@@ -126,7 +131,7 @@ class _HistoryPageState extends State<HistoryPage> {
     }
   }
 
-  // MODE 2: COURSE REPORT
+
 
   Future<void> loadCourseReport() async {
     if (selectedCourse.isEmpty) {
@@ -171,11 +176,15 @@ class _HistoryPageState extends State<HistoryPage> {
       double percentage =
           totalSessions == 0 ? 0 : (presentCount / totalSessions) * 100;
 
-      setState(() {
-        statusMessage =
-            "Present: $presentCount | Absent: $absentCount | ${percentage.toStringAsFixed(1)}%";
-        loading = false;
-      });
+     setState(() {
+  this.presentCount = presentCount;
+  this.absentCount = absentCount;
+  attendancePercentage = percentage;
+  showReport = true;
+
+  statusMessage = "";
+  loading = false;
+});
     } catch (e) {
       setState(() {
         statusMessage = "ERROR LOADING DATA";
@@ -208,6 +217,59 @@ class _HistoryPageState extends State<HistoryPage> {
     if (statusMessage.contains("ABSENT")) return Colors.red;
     return Colors.orange;
   }
+  // MODERN CARD WIDGET 
+  Widget buildModernCard({
+  required String title,
+  required String value,
+  required IconData icon,
+  required Color color,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(22),
+      boxShadow: [
+        BoxShadow(
+          color: color.withOpacity(0.15),
+          blurRadius: 12,
+          offset: const Offset(0, 5),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        Icon(
+          icon,
+          color: color,
+          size: 42,
+        ),
+
+        const SizedBox(height: 12),
+
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+
+        const SizedBox(height: 6),
+
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +281,7 @@ class _HistoryPageState extends State<HistoryPage> {
         title: const Text("Attendance History"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+         padding: const EdgeInsets.fromLTRB(30, 60, 30, 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -251,7 +313,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
             const SizedBox(height: 20),
 
-            const Text("SELECT COURSE",
+            const Text("Enter Course",
                 style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 8),
 
@@ -282,48 +344,221 @@ class _HistoryPageState extends State<HistoryPage> {
             const SizedBox(height: 25),
 
             // TWO MODES
-            Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: loading ? null : checkAttendance,
-                    child: const Text("Check Specific Day"),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: loading ? null : loadCourseReport,
-                    child: const Text("View Course Report"),
-                  ),
-                ),
-              ],
+          Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    // First Button
+    MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromARGB(255, 7, 69, 121).withOpacity(0.25),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
+          ],
+        ),
+        child: SizedBox(
+          width: 170,
+          height: 50,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1E4B7A),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: loading ? null : checkAttendance,
+            child: const Text("Check Specific Day"),
+          ),
+        ),
+      ),
+    ),
+
+    const SizedBox(width: 20), // Space between buttons
+
+    // Second Button
+    MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromARGB(255, 37, 119, 40).withOpacity(0.25),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: SizedBox(
+          width: 170,
+          height: 50,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            onPressed: loading ? null : loadCourseReport,
+            child: const Text("View Course Report"),
+          ),
+        ),
+      ),
+    ),
+  ],
+),
 
             const SizedBox(height: 30),
 
             if (statusMessage.isNotEmpty)
-              Center(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 18),
-                  decoration: BoxDecoration(
-                    color: getStatusColor().withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    statusMessage,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: getStatusColor(),
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+  Center(
+    child: AnimatedContainer(
+      duration: const Duration(milliseconds: 400),
+      padding: const EdgeInsets.all(22),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: getStatusColor().withOpacity(0.18),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(
+            statusMessage.contains("PRESENT")
+                ? Icons.check_circle
+                : statusMessage.contains("ABSENT")
+                    ? Icons.cancel
+                    : statusMessage.contains("ERROR")
+                        ? Icons.error
+                        : Icons.info,
+            size: 70,
+            color: getStatusColor(),
+          ),
+
+          const SizedBox(height: 15),
+
+          Text(
+            statusMessage,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: getStatusColor(),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
+            ),
+            
+            if (showReport)
+  Padding(
+    padding: const EdgeInsets.only(top: 10),
+    child: Column(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: buildModernCard(
+                title: "Present",
+                value: presentCount.toString(),
+                icon: Icons.check_circle,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: buildModernCard(
+                title: "Absent",
+                value: absentCount.toString(),
+                icon: Icons.cancel,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 18),
+
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF1E4B7A),
+                Color(0xFF2F80ED),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.25),
+                blurRadius: 15,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Column(
+            children: [
+              const Icon(
+                Icons.bar_chart,
+                color: Colors.white,
+                size: 45,
+              ),
+
+              const SizedBox(height: 12),
+
+              Text(
+                "${attendancePercentage.toStringAsFixed(1)}%",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Attendance Rate",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  ),
           ],
         ),
       ),

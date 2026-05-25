@@ -89,7 +89,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFF1E4B7A),
-        centerTitle: true,
+       
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: const [
@@ -175,54 +175,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
                               color: Colors.white70,
                               fontSize: 14,
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: const [
-                          BoxShadow(color: Colors.black12, blurRadius: 5),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          const Text(
-                            "ATTENDANCE RATE",
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey,
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "$attendanceRate%",
-                                style: const TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1E4B7A),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              const Icon(
-                                Icons.verified,
-                                color: Colors.green,
-                                size: 18,
-                              ),
-                            ],
                           ),
                         ],
                       ),
