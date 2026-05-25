@@ -17,6 +17,21 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String? imagePath;
+  String? department;
+
+  @override
+void initState() {
+  super.initState();
+  loadDepartment();
+}
+
+Future<void> loadDepartment() async {
+  final dept = await TokenService.getDepartment();
+
+  setState(() {
+    department = dept ?? "No Department";
+  });
+}
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
@@ -156,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children:  [
                           Text(
                             "DEPARTMENT",
                             style: TextStyle(
@@ -166,13 +181,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           SizedBox(height: 5),
-                          Text(
-                            "Software Engineering",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                         Text(
+                          department ?? "Loading...",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
                         ],
                       ),
                     ),

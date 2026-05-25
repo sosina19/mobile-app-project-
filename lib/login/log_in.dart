@@ -65,13 +65,13 @@ class _LoginPageState extends State<LoginPage> {
         await TokenService.saveRole(role);
         await TokenService.saveToken(data["access_token"]);
 
-        final user = data["user"];
+      final user = data["user"] ?? {};
 
-        await TokenService.saveUserId(user["id"].toString());
-        await TokenService.saveName(user["fullname"]);
-        await TokenService.saveEmail(user["email"]);
-        await TokenService.saveRole(role);
-
+        await TokenService.saveUserId(user["id"]?.toString() ?? "");
+await TokenService.saveName(user["fullname"] ?? "");
+await TokenService.saveEmail(user["email"] ?? "");
+await TokenService.saveDepartment(user["department"] ?? "");
+ await TokenService.saveRole(role);
         print("ROLE FOUND: $role");
 
         if (!mounted) return;
