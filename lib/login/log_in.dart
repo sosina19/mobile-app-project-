@@ -275,8 +275,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
+
+                  const Text(
+                    "DDU REGISTRY",
+                    style: TextStyle(
+                      fontSize: 11,
+                      letterSpacing: 2,
+                      color: Colors.grey,
+                    ),
+                  ),
               ],
             ),
           ),

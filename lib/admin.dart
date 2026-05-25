@@ -3,7 +3,7 @@ import 'package:mobile_app/signup/studentsignup.dart';
 import 'package:mobile_app/signup/teachersignup.dart';
 import '../service/token_service.dart';
 import 'Student_Interface/profile.dart';
-
+import '../service/attendance_service.dart';
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
 
@@ -17,12 +17,42 @@ class _AdminHomeState extends State<AdminHome> {
   String? role;
 
   int currentIndex = 0;
+  int totalStudents = 0;
+int totalTeachers = 0;
+int totalCourses = 0;
+int totalRecords = 0;
 
   @override
   void initState() {
     super.initState();
     loadUserData();
+    loadAdminStats();
   }
+  Future<void> loadAdminStats() async {
+  try {
+    final data = await AttendanceService.getAttendance();
+    final records = List<Map<String, dynamic>>.from(data);
+
+    final students = <String>{};
+    final courses = <String>{};
+
+    for (var item in records) {
+      students.add(item["userId"].toString());
+      courses.add(item["Course"].toString());
+    }
+
+    setState(() {
+      totalStudents = students.length;
+      totalCourses = courses.length;
+      totalRecords = records.length;
+
+      // teachers not in attendance → placeholder or API later
+      totalTeachers = 10;
+    });
+  } catch (e) {
+    debugPrint("Error: $e");
+  }
+}
 
   Future<void> loadUserData() async {
     String? savedEmail = await TokenService.getEmail();
@@ -36,19 +66,60 @@ class _AdminHomeState extends State<AdminHome> {
     });
   }
 
+  Widget _overviewCard({
+  required String title,
+  required String value,
+  required IconData icon,
+  required Color color,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: color.withOpacity(0.15),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Column(
+      children: [
+        Icon(icon, color: color, size: 32),
+        const SizedBox(height: 10),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.grey.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
   Widget _homeBody() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double maxWidth = constraints.maxWidth > 600
-            ? 600
-            : constraints.maxWidth;
-
+        
         return Align(
           alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             child: Container(
-              width: maxWidth,
-              padding: const EdgeInsets.all(100),
+ 
+              padding: const EdgeInsets.all(20),
 
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,49 +139,110 @@ class _AdminHomeState extends State<AdminHome> {
                   const SizedBox(height: 20),
 
                   Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1E4B7A),
-                      borderRadius: BorderRadius.circular(15),
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E4B7A),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        children: [
+                          const CircleAvatar(
+                            radius: 30,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.person,
+                              color: Color(0xFF1E4B7A),
+                              size: 40,
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          Text(
+                            name ?? "Loading...",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          const SizedBox(height: 5),
+
+                          Text(
+                            email ?? "Loading...",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        const CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.person,
-                            color: Color(0xFF1E4B7A),
-                            size: 40,
-                          ),
-                        ),
+                    const SizedBox(height: 25),
 
-                        const SizedBox(height: 12),
+const Text(
+  "Admin Overview",
+  style: TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF1E4B7A),
+  ),
+),
 
-                        Text(
-                          name ?? "Loading...",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
+const SizedBox(height: 15),
 
-                        const SizedBox(height: 5),
+Row(
+  children: [
+    Expanded(
+      child: _overviewCard(
+        title: "Students",
+        value: totalStudents.toString(),
+        icon: Icons.school,
+        color: Colors.blue,
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      child: _overviewCard(
+        title: "Teachers",
+        value: totalTeachers.toString(),
+        icon: Icons.person,
+        color: Colors.green,
+      ),
+    ),
+  ],
+),
 
-                        Text(
-                          email ?? "Loading...",
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+const SizedBox(height: 12),
+
+Row(
+  children: [
+    Expanded(
+      child: _overviewCard(
+        title: "Courses",
+        value: totalCourses.toString(),
+        icon: Icons.book,
+        color: Colors.orange,
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      child: _overviewCard(
+        title: "Records",
+        value: totalRecords.toString(),
+        icon: Icons.bar_chart,
+        color: Colors.red,
+      ),
+    ),
+  ],
+),
+
+const SizedBox(height: 15),
+
                 ],
               ),
             ),
@@ -122,15 +254,12 @@ class _AdminHomeState extends State<AdminHome> {
 
       List<Widget> get pages => [
       _homeBody(),
-      const Center(child: Text("Courses")),
-      const SizedBox(),
-      const Center(child: Text("History")),
-
-     
+      const SizedBox(),    
       ProfilePage(
         name: name ?? "Loading...",
         email: email ?? "Loading...",
       ),
+      
     ];
 
   void _showAddMenu() {
@@ -268,7 +397,6 @@ class _AdminHomeState extends State<AdminHome> {
      appBar: AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: const Color(0xFF1E4B7A),
-      centerTitle: true,
       title: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -298,7 +426,7 @@ class _AdminHomeState extends State<AdminHome> {
         unselectedItemColor: Colors.grey,
 
         onTap: (index) {
-          if (index == 2) {
+          if (index == 1) {
             _showAddMenu();
           } else {
             setState(() {
@@ -309,12 +437,10 @@ class _AdminHomeState extends State<AdminHome> {
 
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.article), label: 'Courses'),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle, size: 35),
             label: 'Add',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
