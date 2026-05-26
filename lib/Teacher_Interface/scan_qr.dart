@@ -16,8 +16,8 @@ class ScanQrPage extends StatefulWidget {
 class _ScanQrPageState extends State<ScanQrPage> {
   final MobileScannerController controller = MobileScannerController();
   final TextEditingController courseController = TextEditingController();
-  
-String selectedCourse = "";
+
+  String selectedCourse = "";
   bool scanningStarted = false;
   bool isProcessing = false;
   bool _courseWarningShown = false;
@@ -25,97 +25,92 @@ String selectedCourse = "";
   final List<Map<String, String>> recentScans = [];
 
   Future<bool> _onBack() async => false;
- Future<void> selectCourse() async {
-  final TextEditingController controller = TextEditingController();
+  Future<void> selectCourse() async {
+    final TextEditingController controller = TextEditingController();
 
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text("Enter Course"),
-      content: TextField(
-        controller: controller,
-        decoration: const InputDecoration(
-          hintText: "e.g. Mathematics 101",
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Enter Course"),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: "e.g. Mathematics 101"),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              final course = controller.text.trim();
+
+              if (course.isEmpty) return;
+
+              setState(() {
+                selectedCourse = course;
+                scanningStarted = true;
+
+                scannedid.clear();
+                recentScans.clear();
+                _courseWarningShown = false;
+              });
+
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("$course selected"),
+                  backgroundColor: const Color(0xFF1E4B7A),
+                ),
+              );
+            },
+            child: const Text("Start"),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Cancel"),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            final course = controller.text.trim();
-
-            if (course.isEmpty) return;
-
-            setState(() {
-              selectedCourse = course;
-              scanningStarted = true;
-
-              scannedid.clear();
-              recentScans.clear();
-              _courseWarningShown = false;
-            });
-
-            Navigator.pop(context);
-
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("$course selected"),
-                backgroundColor: const Color(0xFF1E4B7A),
-              ),
-            );
-          },
-          child: const Text("Start"),
-        ),
-      ],
-    ),
-  );
-}
-  void handleScan(String raw) async {
-  if (!scanningStarted || isProcessing) return;
-
-  isProcessing = true;
-
-  try {
-    final data = jsonDecode(raw);
-    final id = data["id"] ?? "";
-    final name = data["name"] ?? "Unknown";
-
-    if (id.isEmpty) return;
-
-    // prevent duplicate scan in UI
-    if (scannedid.contains(id)) return;
-
-    scannedid.add(id);
-
-    // SEND TO BACKEND (THIS IS THE REAL FIX)
-    await AttendanceService.markAttendance(
-      userId: id,
-      name: name,
-      course: selectedCourse,
-      status: "present",
-       
     );
-
-    recentScans.insert(0, {
-      "name": name,
-      "id": id,
-    });
-
-    if (recentScans.length > 5) {
-      recentScans.removeLast();
-    }
-
-    setState(() {});
-  } catch (e) {
-    debugPrint("QR error: $e");
   }
 
-  await Future.delayed(const Duration(seconds: 2));
-  isProcessing = false;
-}
+  void handleScan(String raw) async {
+    if (!scanningStarted || isProcessing) return;
+
+    isProcessing = true;
+
+    try {
+      final data = jsonDecode(raw);
+      final id = data["id"] ?? "";
+      final name = data["name"] ?? "Unknown";
+
+      if (id.isEmpty) return;
+
+      // prevent duplicate scan in UI
+      if (scannedid.contains(id)) return;
+
+      scannedid.add(id);
+
+      // SEND TO BACKEND (THIS IS THE REAL FIX)
+      await AttendanceService.markAttendance(
+        userId: id,
+        name: name,
+        course: selectedCourse,
+        status: "present",
+      );
+
+      recentScans.insert(0, {"name": name, "id": id});
+
+      if (recentScans.length > 5) {
+        recentScans.removeLast();
+      }
+
+      setState(() {});
+    } catch (e) {
+      debugPrint("QR error: $e");
+    }
+
+    await Future.delayed(const Duration(seconds: 2));
+    isProcessing = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +119,7 @@ String selectedCourse = "";
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 214, 210, 210),
           elevation: 0,
           title: const Align(
             alignment: Alignment.centerLeft,
@@ -142,14 +137,14 @@ String selectedCourse = "";
           children: [
             const SizedBox(height: 10),
 
-           ElevatedButton(
-            onPressed: selectCourse,
-            child: Text(
-              selectedCourse.isEmpty
-                  ? "Enter Course"
-                  : "Course: $selectedCourse",
+            ElevatedButton(
+              onPressed: selectCourse,
+              child: Text(
+                selectedCourse.isEmpty
+                    ? "Enter Course"
+                    : "Course: $selectedCourse",
+              ),
             ),
-          ),
 
             const SizedBox(height: 10),
 
@@ -158,7 +153,7 @@ String selectedCourse = "";
               width: 250,
               child: MobileScanner(
                 controller: controller,
-               onDetect: (capture) async {
+                onDetect: (capture) async {
                   final barcodes = capture.barcodes;
 
                   if (barcodes.isEmpty) return;

@@ -65,7 +65,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F5F7),
+      backgroundColor: const Color.fromARGB(255, 214, 210, 210),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E4B7A),
         elevation: 0,
@@ -134,7 +134,7 @@ class _CreateCoursePageState extends State<CreateCoursePage> {
                         value: "Computer Science",
                         child: Text("Computer Science"),
                       ),
-                       DropdownMenuItem(
+                      DropdownMenuItem(
                         value: "architecture",
                         child: Text("Architecture"),
                       ),

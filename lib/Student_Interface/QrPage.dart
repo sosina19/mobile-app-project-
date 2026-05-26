@@ -10,9 +10,12 @@ class QrPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String qrData = '{"id":"$id","name":"$name"}';
+    // 1. Check if global Dark Mode is enabled
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 228, 225, 225),
+      // 2. Dynamic canvas layout matching colors
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -25,23 +28,25 @@ class QrPage extends StatelessWidget {
               child: Container(
                 width: maxWidth,
                 padding: const EdgeInsets.all(16),
-
                 child: Column(
                   children: [
-                    
+                    // Student Portal Top Header Card
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        color: Color(0xFF1E4B7A),
+                        // Slightly adapts blue shade for dark mode
+                        color: isDark
+                            ? const Color(0xFF143252)
+                            : const Color(0xFF1E4B7A),
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: const [
                           BoxShadow(color: Colors.black12, blurRadius: 5),
                         ],
                       ),
                       child: Column(
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             "Student Portal",
                             style: TextStyle(
                               fontSize: 22,
@@ -49,7 +54,7 @@ class QrPage extends StatelessWidget {
                               color: Color.fromARGB(255, 253, 253, 253),
                             ),
                           ),
-                          SizedBox(height: 5),
+                          const SizedBox(height: 5),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -57,11 +62,19 @@ class QrPage extends StatelessWidget {
                                 "Dire Dawa University",
                                 style: TextStyle(
                                   fontSize: 13,
-                                  color: Colors.grey,
+                                  color: isDark
+                                      ? Colors.grey[400]
+                                      : Colors.grey[300],
                                 ),
                               ),
-                              SizedBox(width: 5),
-                              Icon(Icons.school, size: 16, color: Colors.grey),
+                              const SizedBox(width: 5),
+                              Icon(
+                                Icons.school,
+                                size: 16,
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[300],
+                              ),
                             ],
                           ),
                         ],
@@ -70,23 +83,28 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    
+                    // Middle Student Info Info Card
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 250, 251, 252),
+                        // Dark grey card base background or crisp off-white structure
+                        color: isDark
+                            ? Colors.grey[900]
+                            : const Color.fromARGB(255, 250, 251, 252),
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: Column(
                         children: [
-                          const Text(
+                          Text(
                             "MY QR CODE",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E4B7A),
+                              color: isDark
+                                  ? const Color(0xFF5B92E5)
+                                  : const Color(0xFF1E4B7A),
                             ),
                           ),
 
@@ -98,7 +116,9 @@ class QrPage extends StatelessWidget {
                                 width: 45,
                                 height: 45,
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF1E4B7A),
+                                  color: isDark
+                                      ? const Color(0xFF143252)
+                                      : const Color(0xFF1E4B7A),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
@@ -116,14 +136,20 @@ class QrPage extends StatelessWidget {
                                     Text(
                                       name,
                                       overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Color.fromARGB(255, 15, 15, 15),
+                                        color: isDark
+                                            ? Colors.white
+                                            : const Color.fromARGB(
+                                                255,
+                                                15,
+                                                15,
+                                                15,
+                                              ),
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                   
                                   ],
                                 ),
                               ),
@@ -135,10 +161,11 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    
+                    // QR Code Container Box
                     Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
+                        // Keep this background block white so physical scanners can see it cleanly!
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: const [
@@ -149,12 +176,21 @@ class QrPage extends StatelessWidget {
                         data: qrData,
                         size: 200,
                         backgroundColor: Colors.white,
+                        // Force the actual lines/modules of the QR code to stay dark black
+                        eyeStyle: const QrEyeStyle(
+                          eyeShape: QrEyeShape.square,
+                          color: Colors.black,
+                        ),
+                        dataModuleStyle: const QrDataModuleStyle(
+                          dataModuleShape: QrDataModuleShape.square,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
 
                     const SizedBox(height: 15),
 
-                  
+                    // Ready Badge UI Indicator component
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -183,11 +219,14 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                  
-                    const Text(
+                    // Dynamic Bottom Guide Text
+                    Text(
                       "Hold your device steady in front of the scanner for instant attendance verification",
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13, color: Colors.grey),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isDark ? Colors.grey[400] : Colors.grey,
+                      ),
                     ),
                   ],
                 ),
