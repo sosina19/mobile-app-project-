@@ -297,7 +297,7 @@ class _HistoryPageState extends State<HistoryPage> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      // Wrapped in a scrollview to prevent clipping when historical metrics show up
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(24, 30, 24, 30),

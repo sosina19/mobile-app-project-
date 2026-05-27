@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/login/log_in.dart';
-import 'package:mobile_app/service/token_service.dart';
+import 'package:Qr_Attendance/login/log_in.dart';
+import 'package:Qr_Attendance/service/token_service.dart';
 import 'QrPage.dart';
 import 'historyPage.dart';
 import 'profile.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:mobile_app/main.dart';
+import 'package:Qr_Attendance/main.dart';
 import '../service/token_service.dart';
-import 'package:mobile_app/login/log_in.dart';
+import 'package:Qr_Attendance/login/log_in.dart';
 
 class ProfilePage extends StatefulWidget {
   final String name;

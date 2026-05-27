@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/Teacher_Interface/attendance_history.dart';
+import 'package:Qr_Attendance/Teacher_Interface/attendance_history.dart';
 import '../service/course_service.dart';
 import '../model/course.dart';
 import '../service/token_service.dart';

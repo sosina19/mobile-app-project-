@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'welcome.dart';
-import 'package:mobile_app/service/token_service.dart';
+import 'package:Qr_Attendance/service/token_service.dart';
 import 'admin.dart';
-import 'package:mobile_app/Student_Interface/studentdashboard.dart';
-import 'package:mobile_app/Teacher_Interface/teacherdashboard.dart';
-
+import 'package:Qr_Attendance/Student_Interface/studentdashboard.dart';
+import 'package:Qr_Attendance/Teacher_Interface/teacherdashboard.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -15,7 +14,6 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-
   @override
   void initState() {
     super.initState();
@@ -23,52 +21,51 @@ class _SplashState extends State<Splash> {
   }
 
   Future<void> checkLogin() async {
-  await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 2));
 
-  final token = await TokenService.getToken();
-  final role = await TokenService.getRole();
-  final id = await TokenService.getUserId();
-  final name = await TokenService.getName();
-  final email = await TokenService.getEmail();
-  print("TOKEN: $token");
-  print("ROLE: $role");
-  if (!mounted) return;
+    final token = await TokenService.getToken();
+    final role = await TokenService.getRole();
+    final id = await TokenService.getUserId();
+    final name = await TokenService.getName();
+    final email = await TokenService.getEmail();
+    print("TOKEN: $token");
+    print("ROLE: $role");
+    if (!mounted) return;
 
-  if (token != null && role != null) {
-    if (role == "admin") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AdminHome()),
-      );
-    } 
-    else if (role == "teacher") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const TeacherDashboard()),
-      );
-    } 
-    else {
-      //  FIX: you must NOT call empty constructor
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => StudentDashboard(
-             serverId: id?? "",
-            studentId: id ?? "",
-            name: name ?? "",
-            email: email ?? "",
-            role: role,
+    if (token != null && role != null) {
+      if (role == "admin") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const AdminHome()),
+        );
+      } else if (role == "teacher") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const TeacherDashboard()),
+        );
+      } else {
+        //  FIX: you must NOT call empty constructor
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => StudentDashboard(
+              serverId: id ?? "",
+              studentId: id ?? "",
+              name: name ?? "",
+              email: email ?? "",
+              role: role,
+            ),
           ),
-        ),
+        );
+      }
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const Welcome()),
       );
     }
-  } else {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const Welcome()),
-    );
   }
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -156,7 +153,12 @@ class _SplashState extends State<Splash> {
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
                           value: null, // makes it animated loading
-                          backgroundColor: const Color.fromARGB(255,177,173,173,),
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            177,
+                            173,
+                            173,
+                          ),
                           color: const Color(0xFF1E4B7A),
                           minHeight: 6,
                         ),

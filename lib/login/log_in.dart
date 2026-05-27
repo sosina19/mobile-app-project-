@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../service/token_service.dart';
 import '../signup/studentsignup.dart';
-import 'package:mobile_app/admin.dart';
-import 'package:mobile_app/Student_Interface/studentdashboard.dart';
-import 'package:mobile_app/Teacher_Interface/teacherdashboard.dart';
+import 'package:Qr_Attendance/admin.dart';
+import 'package:Qr_Attendance/Student_Interface/studentdashboard.dart';
+import 'package:Qr_Attendance/Teacher_Interface/teacherdashboard.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -35,7 +35,6 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() => isLoading = true);
 
-    
     final url = Uri.parse("https://s-backend-5f4c.onrender.com/auth");
 
     try {
@@ -57,7 +56,6 @@ class _LoginPageState extends State<LoginPage> {
 
         await TokenService.saveToken(data["access_token"]);
 
-       
         final role = (data["role"] ?? data["user"]?["role"])
             .toString()
             .trim()
@@ -65,13 +63,13 @@ class _LoginPageState extends State<LoginPage> {
         await TokenService.saveRole(role);
         await TokenService.saveToken(data["access_token"]);
 
-      final user = data["user"] ?? {};
+        final user = data["user"] ?? {};
 
         await TokenService.saveUserId(user["id"]?.toString() ?? "");
-await TokenService.saveName(user["fullname"] ?? "");
-await TokenService.saveEmail(user["email"] ?? "");
-await TokenService.saveDepartment(user["department"] ?? "");
- await TokenService.saveRole(role);
+        await TokenService.saveName(user["fullname"] ?? "");
+        await TokenService.saveEmail(user["email"] ?? "");
+        await TokenService.saveDepartment(user["department"] ?? "");
+        await TokenService.saveRole(role);
         print("ROLE FOUND: $role");
 
         if (!mounted) return;
@@ -79,7 +77,6 @@ await TokenService.saveDepartment(user["department"] ?? "");
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("Login Successful")));
-
 
         if (role == "admin") {
           Navigator.pushReplacement(
@@ -96,7 +93,7 @@ await TokenService.saveDepartment(user["department"] ?? "");
             context,
             MaterialPageRoute(
               builder: (_) => StudentDashboard(
-                serverId: user["id"].toString(),  
+                serverId: user["id"].toString(),
                 studentId: user["studId"].toString(),
                 name: user["fullname"],
                 email: user["email"],
@@ -145,7 +142,6 @@ await TokenService.saveDepartment(user["department"] ?? "");
           child: SingleChildScrollView(
             child: Column(
               children: [
-              
                 SafeArea(
                   child: Container(
                     width: double.infinity,
@@ -277,14 +273,14 @@ await TokenService.saveDepartment(user["department"] ?? "");
                 ),
                 const SizedBox(height: 20),
 
-                  const Text(
-                    "DDU REGISTRY",
-                    style: TextStyle(
-                      fontSize: 11,
-                      letterSpacing: 2,
-                      color: Colors.grey,
-                    ),
+                const Text(
+                  "DDU REGISTRY",
+                  style: TextStyle(
+                    fontSize: 11,
+                    letterSpacing: 2,
+                    color: Colors.grey,
                   ),
+                ),
               ],
             ),
           ),
