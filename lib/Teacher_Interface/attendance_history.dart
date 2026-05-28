@@ -14,43 +14,52 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
   DateTime selectedDate = DateTime.now();
 
   String selectedCourse = "";
+  bool showWholeHistory = false;
 
   List<Map<String, dynamic>> records = [];
 
   @override
-  @override
-void initState() {
-  super.initState();
+  void initState() {
+    super.initState();
 
-  Future.microtask(() {
-    selectedCourse = "";
-    records = [];
-  });
-}
+    Future.microtask(() {
+      selectedCourse = "";
+      records = [];
+    });
+  }
 
- Future<void> loadRecords() async {
+  Future<void> loadRecords() async {
     if (selectedCourse.isEmpty) return;
 
-  try {
-    final data = await AttendanceService.getAttendance();
+    try {
+      final data = await AttendanceService.getAttendance();
 
-    final List<Map<String, dynamic>> typedData =
-        List<Map<String, dynamic>>.from(data);
+      final List<Map<String, dynamic>> typedData =
+          List<Map<String, dynamic>>.from(data);
 
-    records = typedData.where((item) {
-      final date = DateTime.parse(item["attendanceDate"]);
+      records = typedData.where((item) {
+        final date = DateTime.parse(item["attendanceDate"]);
 
-      return item["Course"] == selectedCourse &&
-          date.year == selectedDate.year &&
-          date.month == selectedDate.month &&
-          date.day == selectedDate.day;
-    }).toList();
+        final sameCourse =
+            item["Course"].toString().toLowerCase() ==
+                selectedCourse.toLowerCase();
 
-    setState(() {});
-  } catch (e) {
-    debugPrint("Error loading attendance: $e");
+        if (showWholeHistory) {
+          return sameCourse;
+        }
+
+        return sameCourse &&
+            date.year == selectedDate.year &&
+            date.month == selectedDate.month &&
+            date.day == selectedDate.day;
+      }).toList();
+
+      setState(() {});
+    } catch (e) {
+      debugPrint("Error loading attendance: $e");
+    }
   }
-}
+
   Future<void> pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -71,60 +80,127 @@ void initState() {
   Future<void> enterCourse() async {
     final controller = TextEditingController();
 
+    bool allHistory = false;
+
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Enter Course"),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(
-            hintText: "e.g. Software Engineering",
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              final course = controller.text.trim();
+      builder: (_) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            title: const Text("Enter Course"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  decoration: const InputDecoration(
+                    hintText: "e.g. Software Engineering",
+                  ),
+                ),
+                const SizedBox(height: 15),
+                CheckboxListTile(
+                  value: allHistory,
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text("Show Whole History"),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      allHistory = value ?? false;
+                    });
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final course = controller.text.trim();
 
-              if (course.isEmpty) return;
+                  if (course.isEmpty) return;
 
-              setState(() {
-                selectedCourse = course;
-                   records = [];
-              });
+                  setState(() {
+                    selectedCourse = course;
+                    showWholeHistory = allHistory;
+                    records = [];
+                  });
 
-              Navigator.pop(context);
-              loadRecords();
-            },
-            child: const Text("Apply"),
-          ),
-        ],
+                  Navigator.pop(context);
+                  loadRecords();
+                },
+                child: const Text("Apply"),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
   String formatDate(DateTime date) {
     List months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
     ];
 
     return "${months[date.month - 1]} ${date.day}, ${date.year}";
   }
+
+  // =========================================================
+  // ✅ FIXED ABSENT FILTER (WORKING VERSION)
+  // =========================================================
+  Future<void> loadFrequentAbsentees() async {
+    if (selectedCourse.isEmpty) return;
+
+    try {
+      final data = await AttendanceService.getAttendance();
+
+      final List<Map<String, dynamic>> all =
+          List<Map<String, dynamic>>.from(data);
+
+      // STEP 1: filter only course
+      final courseRecords = all.where((item) {
+        return item["Course"].toString().toLowerCase() ==
+            selectedCourse.toLowerCase();
+      }).toList();
+
+      // STEP 2: count absences per student
+      Map<String, int> absenceCount = {};
+
+      for (var item in courseRecords) {
+        final userId = item["userId"]?.toString();
+        if (userId == null) continue;
+
+        final status = item["status"]?.toString().toLowerCase();
+
+        if (status == "absent") {
+          absenceCount[userId] = (absenceCount[userId] ?? 0) + 1;
+        }
+      }
+
+      // STEP 3: keep only students with > 3 absences
+      final Map<String, Map<String, dynamic>> result = {};
+
+      for (var item in courseRecords) {
+        final userId = item["userId"]?.toString();
+        if (userId == null) continue;
+
+        if ((absenceCount[userId] ?? 0) > 3) {
+          result[userId] = item;
+        }
+      }
+
+      setState(() {
+        records = result.values.toList();
+      });
+    } catch (e) {
+      debugPrint("Error: $e");
+    }
+  }
+
+  // =========================================================
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +208,6 @@ void initState() {
 
     return Padding(
       padding: const EdgeInsets.all(16),
-
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -156,7 +231,6 @@ void initState() {
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
-
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -164,9 +238,7 @@ void initState() {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text("DATE", style: TextStyle(color: Colors.grey)),
-
                     const SizedBox(height: 5),
-
                     Text(
                       formatDate(selectedDate),
                       style: const TextStyle(
@@ -176,7 +248,6 @@ void initState() {
                     ),
                   ],
                 ),
-
                 IconButton(
                   onPressed: pickDate,
                   icon: const Icon(
@@ -189,18 +260,16 @@ void initState() {
           ),
 
           const SizedBox(height: 15),
+
           GestureDetector(
             onTap: enterCourse,
-
             child: Container(
               padding: const EdgeInsets.all(16),
-
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
-
-               child: Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Column(
@@ -238,18 +307,15 @@ void initState() {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
                   vertical: 7,
                 ),
-
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
                   borderRadius: BorderRadius.circular(20),
                 ),
-
                 child: Text(
                   "${records.length} Records Found",
                   style: const TextStyle(color: Color(0xFF1E4B7A)),
@@ -267,60 +333,63 @@ void initState() {
                     itemCount: records.length,
                     itemBuilder: (_, index) {
                       final student = records[index];
-                      debugPrint(student.toString());
+
                       return Container(
                         margin: const EdgeInsets.only(bottom: 12),
-
                         padding: const EdgeInsets.all(14),
-
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(14),
                         ),
-
                         child: Row(
                           children: [
-                            CircleAvatar(
+                            const CircleAvatar(
                               radius: 28,
-                              backgroundColor: Colors.grey.shade300,
-                              child: const Icon(Icons.person),
+                              child: Icon(Icons.person),
                             ),
-
-                           const SizedBox(width: 15),
-
+                            const SizedBox(width: 15),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    (student["user"]?["fullName"]  ?? "Unknown Student").toString(),
+                                    (student["user"]?["fullName"] ??
+                                            "Unknown Student")
+                                        .toString(),
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
                                     ),
                                   ),
-
                                   const SizedBox(height: 4),
-
                                   Text(
-                                  student["user"]?["studId"] ?? "",
-                                    style: const TextStyle(color: Colors.grey),
+                                    student["user"]?["studId"] ?? "",
+                                    style: const TextStyle(
+                                        color: Colors.grey),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    student["attendanceDate"]
+                                        .toString()
+                                        .split("T")[0],
+                                    style: const TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 14,
                                 vertical: 8,
                               ),
-
                               decoration: BoxDecoration(
                                 color: Colors.green.shade100,
                                 borderRadius: BorderRadius.circular(20),
                               ),
-
                               child: const Text(
                                 "PRESENT",
                                 style: TextStyle(
