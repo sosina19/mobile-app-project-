@@ -148,60 +148,58 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
     return "${months[date.month - 1]} ${date.day}, ${date.year}";
   }
 
-  // =========================================================
-  // ✅ FIXED ABSENT FILTER (WORKING VERSION)
-  // =========================================================
-  Future<void> loadFrequentAbsentees() async {
-    if (selectedCourse.isEmpty) return;
+Future<void> loadFrequentAbsentees() async {
+  if (selectedCourse.isEmpty) return;
 
-    try {
-      final data = await AttendanceService.getAttendance();
+  try {
+    final data = await AttendanceService.getAttendance();
 
-      final List<Map<String, dynamic>> all =
-          List<Map<String, dynamic>>.from(data);
+    final List<Map<String, dynamic>> all =
+        List<Map<String, dynamic>>.from(data);
 
-      // STEP 1: filter only course
-      final courseRecords = all.where((item) {
-        return item["Course"].toString().toLowerCase() ==
-            selectedCourse.toLowerCase();
-      }).toList();
+    // STEP 1: filter by course
+    final courseRecords = all.where((item) {
+      return item["Course"].toString().toLowerCase() ==
+          selectedCourse.toLowerCase();
+    }).toList();
 
-      // STEP 2: count absences per student
-      Map<String, int> absenceCount = {};
+    // STEP 2: count absences per student + store details
+    Map<String, int> absenceCount = {};
+    Map<String, Map<String, dynamic>> studentInfo = {};
 
-      for (var item in courseRecords) {
-        final userId = item["userId"]?.toString();
-        if (userId == null) continue;
+    for (var item in courseRecords) {
+      final userId = item["userId"]?.toString();
+      if (userId == null) continue;
 
-        final status = item["status"]?.toString().toLowerCase();
+      studentInfo[userId] = item;
 
-        if (status == "absent") {
-          absenceCount[userId] = (absenceCount[userId] ?? 0) + 1;
-        }
+      final status = item["status"]?.toString().toLowerCase();
+
+      if (status == "absent") {
+        absenceCount[userId] = (absenceCount[userId] ?? 0) + 1;
       }
-
-      // STEP 3: keep only students with > 3 absences
-      final Map<String, Map<String, dynamic>> result = {};
-
-      for (var item in courseRecords) {
-        final userId = item["userId"]?.toString();
-        if (userId == null) continue;
-
-        if ((absenceCount[userId] ?? 0) > 3) {
-          result[userId] = item;
-        }
-      }
-
-      setState(() {
-        records = result.values.toList();
-      });
-    } catch (e) {
-      debugPrint("Error: $e");
     }
+
+    // STEP 3: filter > 3 absences
+    final List<Map<String, dynamic>> result = [];
+
+    absenceCount.forEach((userId, count) {
+      if (count > 3) {
+        final student = studentInfo[userId]!;
+        result.add({
+          ...student,
+          "absentCount": count,
+        });
+      }
+    });
+
+    setState(() {
+      records = result;
+    });
+  } catch (e) {
+    debugPrint("Error: $e");
   }
-
-  // =========================================================
-
+}
   @override
   Widget build(BuildContext context) {
     final currentYear = DateTime.now().year;
@@ -294,6 +292,27 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
               ),
             ),
           ),
+          const SizedBox(height: 15),
+
+             Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ElevatedButton.icon(
+                onPressed: loadFrequentAbsentees,
+                icon: const Icon(Icons.person_off, size: 18),
+                label: const Text("Absent > 3 Days"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 20,
+                  ),
+                  textStyle: const TextStyle(fontSize: 12),
+                ),
+              ),
+            ],
+          ),
 
           const SizedBox(height: 20),
 
@@ -381,23 +400,23 @@ class _AttendanceHistoryPageState extends State<AttendanceHistoryPage> {
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade100,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text(
-                                "PRESENT",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                           Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "ABSENT: ${student["absentCount"] ?? 0}",
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                        ),
                           ],
                         ),
                       );
