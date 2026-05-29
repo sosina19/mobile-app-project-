@@ -48,7 +48,7 @@ class _AdminHomeState extends State<AdminHome> {
         totalCourses = courses.length;
         totalRecords = records.length;
 
-        // teachers not in attendance → placeholder or API later
+        
         totalTeachers = 10;
       });
     } catch (e) {

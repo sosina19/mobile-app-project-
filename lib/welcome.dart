@@ -20,7 +20,7 @@ class Welcome extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // TOP LOGO SECTION
+               
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -62,7 +62,7 @@ class Welcome extends StatelessWidget {
 
                   const SizedBox(height: 60),
 
-                  // TITLE
+              
                   const Text(
                     "Welcome to DDU Attendance System",
                     textAlign: TextAlign.center,
@@ -71,7 +71,7 @@ class Welcome extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  // DESCRIPTION
+                 
                   const Text(
                     "Access the university portal to manage academic presence and schedules.",
                     textAlign: TextAlign.center,
@@ -80,7 +80,7 @@ class Welcome extends StatelessWidget {
 
                   const SizedBox(height: 50),
 
-                  // LOGIN BUTTON
+                 
                   SizedBox(
                     height: 50,
                     width: 180,
@@ -108,7 +108,7 @@ class Welcome extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // CREATE ACCOUNT BUTTON
+                  
                   SizedBox(
                     width: 180,
                     height: 50,

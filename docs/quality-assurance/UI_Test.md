@@ -22,7 +22,6 @@ Instructor Interfaces:
 - Dashboard
 - QR Code Scanning Screen
 - Attendance History
-- Course Creation Screen
 - Profile Screen
 
 ## Execution Status Definition
@@ -37,71 +36,64 @@ Instructor Interfaces:
 
 ### Authentication Testing
 
-| Test ID | Scenario                            | Expected outcome             | Status  | Remarks |
-| ------- | ----------------------------------- | ---------------------------- | ------- | ------- |
-| TC01    | Register student with valid data    | Account created successfully | Pending |         |
-| TC02    | Register instructor with valid data | Account created successfully | Pending |         |
-| TC03    | Submit empty registration form      | Validation error displayed   | Pending |         |
-| TC04    | Login with correct credentials      | User logged in               | Pending |         |
-| TC05    | Login with incorrect password       | Error message displayed      | Pending |         |
-| TC06    | Login with unregisterd user         | Access denied                | Pending |         |
+| Test ID | Scenario                            | Expected outcome             | Status  |
+| ------- | ----------------------------------- | ---------------------------- | ------- | 
+| TC01    | Register student with valid data    | Account created successfully | Pass    |         
+| TC02    | Register instructor with valid data | Account created successfully | Pass    |         
+| TC03    | Submit empty registration form      | Validation error displayed   | Pass    |         
+| TC04    | Login with correct credentials      | User logged in               | Pass    |         
+| TC05    | Login with incorrect password       | Error message displayed      | Pass    |         
+| TC06    | Login with unregisterd user         | Access denied                | Pass    |         
 
 ### Student Interface Testing
 
-| Test ID | Scenario               | Expected outcome                 | Status  | Remarks |
-| ------- | ---------------------- | -------------------------------- | ------- | ------- |
-| TC07    | View student dashboard | Name, ID, and attendance visible | Pending |         |
-| TC08    | Navigate between tabs  | Correct screen displayed         | Pending |         |
-| TC09    | View enrolled courses  | Course list shown                | Pending |         |
+| Test ID | Scenario               | Expected outcome                 | Status  | 
+| ------- | ---------------------- | -------------------------------- | ------- | 
+| TC07    | View student dashboard | Name, ID, and attendance visible | Pass    |         
+| TC08    | Navigate between tabs  | Correct screen displayed         | Pass    |         
+
 
 ### QR Code Functionality
 
-| Test ID | Scenario              | Expected outcome          | Status  | Remarks |
-| ------- | --------------------- | ------------------------- | ------- | ------- |
-| TC10    | Display QR code       | Unique QR shown           | Pending |         |
-| TC11    | QR ready for scanning | QR screen loads correctly | Pending |         |
+| Test ID | Scenario              | Expected outcome          | Status  | 
+| ------- | --------------------- | ------------------------- | ------- | 
+| TC9     | Display QR code       | Unique QR shown           | Pass    |        
+| TC10    | QR ready for scanning | QR screen loads correctly | Pass    |        
 
 ### Instructor Scanning Process
 
-| Test ID | Scenario           | Expected outcome        | Status  | Remarks |
-| ------- | ------------------ | ----------------------- | ------- | ------- |
-| TC12    | Scan valid QR code | Student marked present  | Pending |         |
-| TC13    | Scan same QR twice | Duplicate prevented     | Pending |         |
-| TC14    | Scan invalid QR    | Error message displayed | Pending |         |
-| TC15    | View recent scans  | List updates correctly  | Pending |         |
+| Test ID | Scenario           | Expected outcome        | Status  | 
+| ------- | ------------------ | ----------------------- | ------- | 
+| TC11    | Scan valid QR code | Student marked present  | Pass    |         
+| TC12    | Scan same QR twice | Duplicate prevented     | Pass    |         
+| TC13    | Scan invalid QR    | Error message displayed | Pass    |         
+| TC14    | View recent scans  | List updates correctly  | Pass    |         
 
-### Course Management
-
-| Test ID | Scenario                       | Expected outcome       | Status  | Remarks |
-| ------- | ------------------------------ | ---------------------- | ------- | ------- |
-| TC16    | Created course with valid data | Course created         | Pending |         |
-| TC17    | Submit incomplete course data  | Validation error shown | Pending |         |
 
 ### Attendance Records
 
 Student View:
 
-| Test ID | Scenario                 | Expected outcome     | Status  | Remarks |
-| ------- | ------------------------ | -------------------- | ------- | ------- |
-| TC18    | Open attendance history  | Records displayed    | Pending |         |
-| TC19    | Verify sttendance status | Correct status shown | Pending |         |
+| Test ID | Scenario                 | Expected outcome     | Status  | 
+| ------- | ------------------------ | -------------------- | ------- | 
+| TC15    | Open attendance history  | Records displayed    | Pass    |         
+| TC16    | Verify sttendance status | Correct status shown | Pass    |         
 
 Instructor View:
 
-| Test ID | Scenario                | Expected outcome       | Status  | Remarks |
-| ------- | ----------------------- | ---------------------- | ------- | ------- |
-| TC20    | View course attendance  | Student list displayed | Pending |         |
-| TC21    | Mixed attendance status | Present/Absent visible | Pending |         |
+| Test ID | Scenario                | Expected outcome       | Status  |
+| ------- | ----------------------- | ---------------------- | ------- |        
+| TC17    | Mixed attendance status | Present/Absent visible | Pass    |         
 
 ### Interface Behavior Validation
 
-| Test ID | Scenario                | Expected outcome          | Status  | Remarks |
-| ------- | ----------------------- | ------------------------- | ------- | ------- |
-| TC22    | Check theme consistency | Color match design        | Pending |         |
-| TC23    | Verify layout alignment | UI properly aligned       | Pending |         |
-| TC24    | Test navigation flow    | Smooth transitions        | Pending |         |
-| TC25    | Validate button actions | Buttons perform correctly | Pending |         |
-| TC26    | Check layout stability  | No overlap or overflow    | Pending |         |
+| Test ID | Scenario                | Expected outcome          | Status  | 
+| ------- | ----------------------- | ------------------------- | ------- | 
+| TC18    | Check theme consistency | Color match design        | Pass    |         
+| TC19    | Verify layout alignment | UI properly aligned       | Pass    |         
+| TC20    | Test navigation flow    | Smooth transitions        | Pass    |         
+| TC21    | Validate button actions | Buttons perform correctly | Pass    |         
+| TC22    | Check layout stability  | No overlap or overflow    | Pass    |         
 
 ## UI/UX Validation Criteria
 

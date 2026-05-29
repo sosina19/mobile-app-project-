@@ -64,7 +64,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     ];
   }
 
-  // Helper method to let home items cleanly switch bottom navigation tabs
+  
   void _navigateToTab(int index) {
     setState(() {
       currentIndex = index;
@@ -184,7 +184,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            // Added .toUpperCase() here to force the string to capital letters
+                          
                             widget.name.toUpperCase(),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
@@ -219,7 +219,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     ),
                     const SizedBox(height: 15),
 
-                    // 1. Updated dynamic layout options with dedicated index routing targets
+                  
                     _statusNavigationItem(
                       title: "My History",
                       subtitle: "View your attendance logs",
@@ -251,7 +251,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
     );
   }
 
-  // 2. Beautifully engineered structural navigation card supporting material responses
+ 
   Widget _statusNavigationItem({
     required String title,
     required String subtitle,

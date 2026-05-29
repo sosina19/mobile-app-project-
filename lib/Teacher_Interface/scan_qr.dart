@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
-import '../model/course.dart';
-import '../service/course_service.dart';
 import '../service/attendance_service.dart';
 
 class ScanQrPage extends StatefulWidget {
@@ -89,7 +87,6 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
       scannedid.add(id);
 
-      // SEND TO BACKEND (THIS IS THE REAL FIX)
       await AttendanceService.markAttendance(
         userId: id,
         name: name,
@@ -137,75 +134,68 @@ class _ScanQrPageState extends State<ScanQrPage> {
           children: [
             const SizedBox(height: 10),
 
-           GestureDetector(
-  onTap: selectCourse,
-  child: Container(
-    margin: const EdgeInsets.symmetric(horizontal: 8),
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [
-          Color(0xFF1E4B7A),
-          Color(0xFF2F80ED),
-        ],
-      ),
-      borderRadius: BorderRadius.circular(18),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.15),
-          blurRadius: 10,
-          offset: const Offset(0, 5),
-        ),
-      ],
-    ),
-    child: Row(
-      children: [
-        const Icon(
-          Icons.menu_book_rounded,
-          color: Colors.white,
-          size: 28,
-        ),
+            GestureDetector(
+              onTap: selectCourse,
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E4B7A), Color(0xFF2F80ED)],
+                  ),
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.menu_book_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
 
-        const SizedBox(width: 12),
+                    const SizedBox(width: 12),
 
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Course Input",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Course Input",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          Text(
+                            selectedCourse.isEmpty
+                                ? "Tap to enter course name"
+                                : selectedCourse,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.85),
+                              fontSize: 13,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Icon(Icons.edit, color: Colors.white, size: 18),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 4),
-
-              Text(
-                selectedCourse.isEmpty
-                    ? "Tap to enter course name"
-                    : selectedCourse,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
-                  fontSize: 13,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-
-        const Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 18,
-        ),
-      ],
-    ),
-  ),
-),
+            ),
 
             const SizedBox(height: 10),
 
@@ -223,7 +213,7 @@ class _ScanQrPageState extends State<ScanQrPage> {
 
                   if (raw == null || raw.isEmpty) return;
 
-                  // NO COURSE SELECTED
+                  
                   if (selectedCourse.isEmpty) {
                     if (!_courseWarningShown) {
                       _courseWarningShown = true;

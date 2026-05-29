@@ -236,7 +236,7 @@ class _HistoryPageState extends State<HistoryPage> {
     return Colors.orange;
   }
 
-  // DARK MODE READY MODERN CARD WIDGET
+  // DARK MODE CARD WIDGET
   Widget buildModernCard({
     required String title,
     required String value,
@@ -460,7 +460,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
               const SizedBox(height: 30),
 
-              // Status message daily check block
+              // Status message
               if (statusMessage.isNotEmpty)
                 Center(
                   child: AnimatedContainer(
@@ -507,7 +507,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   ),
                 ),
 
-              // Summary Data Metrics Block
+              // Summary Data Metrics 
               if (showReport)
                 Padding(
                   padding: const EdgeInsets.only(top: 10),
@@ -579,7 +579,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                 color: Colors.white,
                                 fontSize: 38,
                                 fontWeight: FontWeight.bold,
-                                // Enforce layout rendering clarity
+                               
                               ),
                             ),
                             const SizedBox(height: 6),

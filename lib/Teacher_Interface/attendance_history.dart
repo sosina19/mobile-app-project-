@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../model/course.dart';
 import '../service/attendance_service.dart';
 
 class AttendanceHistoryPage extends StatefulWidget {
@@ -157,13 +156,13 @@ Future<void> loadFrequentAbsentees() async {
     final List<Map<String, dynamic>> all =
         List<Map<String, dynamic>>.from(data);
 
-    // STEP 1: filter by course
+    // filter by course
     final courseRecords = all.where((item) {
       return item["Course"].toString().toLowerCase() ==
           selectedCourse.toLowerCase();
     }).toList();
 
-    // STEP 2: count absences per student + store details
+    //count absences per student and store details
     Map<String, int> absenceCount = {};
     Map<String, Map<String, dynamic>> studentInfo = {};
 
@@ -180,7 +179,7 @@ Future<void> loadFrequentAbsentees() async {
       }
     }
 
-    // STEP 3: filter > 3 absences
+    //filter > 3 absences
     final List<Map<String, dynamic>> result = [];
 
     absenceCount.forEach((userId, count) {

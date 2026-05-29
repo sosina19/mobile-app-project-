@@ -55,21 +55,21 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void confirmLogout() {
-    // 1. Check if the current theme is Dark Mode
+    
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          // 2. Dynamic background: deep grey for dark mode, light grey for light mode
+      
           backgroundColor: isDark
               ? Colors.grey[900]
               : const Color.fromARGB(255, 228, 225, 225),
           title: Text(
             "Confirm Logout",
             style: TextStyle(
-              // 3. Dynamic title color
+             
               color: isDark ? Colors.white : Colors.black87,
               fontWeight: FontWeight.bold,
             ),
@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
           content: Text(
             "Are you sure you want to logout?",
             style: TextStyle(
-              // 4. Dynamic body text color
+             
               color: isDark ? Colors.grey[300] : Colors.black,
             ),
           ),
@@ -87,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Text(
                 "No",
                 style: TextStyle(
-                  // 5. Dynamic button color so it stands out against dark backgrounds
+                  
                   color: isDark ? Colors.grey[400] : const Color(0xFF1E4B7A),
                 ),
               ),
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.pop(context);
                 await logout();
               },
-              // Kept this red as it indicates a destructive action, which works great in both themes!
+              
               child: const Text(
                 "Yes",
                 style: TextStyle(
@@ -112,21 +112,21 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Add this variable at the top of your _ProfilePageState class with your other variables
+ 
   bool isDarkMode = false;
 
   void showSettingsPopup() {
     showDialog(
       context: context,
       builder: (context) {
-        // StatefulBuilder lets the switch animate toggling on/off inside the popup
+        
         return StatefulBuilder(
           builder: (context, setDialogState) {
-            // 1. Check if the active theme is Dark Mode inside the builder block
+            
             final isDark = Theme.of(context).brightness == Brightness.dark;
 
             return AlertDialog(
-              // 2. Dynamic background color changing safely
+           
               backgroundColor: isDark
                   ? Colors.grey[900]
                   : const Color.fromARGB(255, 228, 225, 225),
@@ -145,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       fontWeight: FontWeight.bold,
                       color: isDark
                           ? Colors.white
-                          : Colors.black87, // Dynamic title
+                          : Colors.black87, 
                     ),
                   ),
                 ],
@@ -153,10 +153,9 @@ class _ProfilePageState extends State<ProfilePage> {
               content: SizedBox(
                 width: double.maxFinite,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min, // Keeps the popup compact
+                  mainAxisSize: MainAxisSize.min, 
                   children: [
-                    // Option 1: Change Profile Photo shortcut
-                    // Option 1: Change Profile Photo shortcut
+                   
                     ListTile(
                       leading: Icon(
                         Icons.photo_camera,
@@ -168,15 +167,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
-                      // 1. Mark this function as async
+                      
                       onTap: () async {
-                        // 2. Temporarily hide the dialog layout so the gallery can open
+                        // Temporarily hide the dialog layout so the gallery can open
                         Navigator.pop(context);
 
-                        // 3. AWAIT forces the app to pause until the user selects an image
+                        // AWAIT forces the app to pause until the user selects an image
                         await pickImage();
 
-                        // 4. Forcefully refresh the main Profile page UI with the new image file path
+                        // Forcefully refresh the main Profile page UI with the new image file path
                         setState(() {});
                       },
                     ),
@@ -184,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: isDark ? Colors.grey[800] : Colors.grey[300],
                     ),
 
-                    // Option 2: Dark Mode Switch
+                    // Dark Mode Switch
                     SwitchListTile(
                       secondary: Icon(
                         Icons.dark_mode,
@@ -197,18 +196,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       activeColor: const Color(0xFF5B92E5),
-                      // Checks if the global theme mode is currently set to dark
+                      
                       value: themeNotifier.value == ThemeMode.dark,
                       onChanged: (bool value) {
-                        // 1. Change the global notifier value
+                        
                         themeNotifier.value = value
                             ? ThemeMode.dark
                             : ThemeMode.light;
 
-                        // 2. Re-render the switch button inside the popup immediately
+                       
                         setDialogState(() {});
 
-                        // 3. Re-render the profile page background layout behind the popup
+                        
                         setState(() {});
                       },
                     ),
@@ -250,13 +249,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void showPrivacyPolicy(BuildContext context) {
-    // 1. Check theme mode safely
+   
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        // Use a distinct context name for the builder
+       
         return AlertDialog(
           backgroundColor: isDark
               ? Colors.grey[900]
@@ -332,7 +331,7 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             TextButton(
               onPressed: () =>
-                  Navigator.pop(dialogContext), // Closes the dialog cleanly
+                  Navigator.pop(dialogContext), 
               child: Text(
                 "I Understand",
                 style: TextStyle(
@@ -399,7 +398,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ? DecorationImage(
                                         image: FileImage(
                                           File(imagePath!),
-                                        ), // This works perfectly now!
+                                        ), 
                                         fit: BoxFit.cover,
                                       )
                                     : null,
@@ -500,7 +499,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // Updated custom list item builder
+  
   Widget _item(
     IconData icon,
     String title,
@@ -509,13 +508,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Fallback standard text colors for light/dark modes if no custom color (like red) is passed
+    
     final defaultColor = isDark ? Colors.white70 : Colors.black87;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        // 6. Make button background adapt automatically
         color: isDark
             ? Colors.grey[900]
             : const Color.fromARGB(255, 245, 244, 244),

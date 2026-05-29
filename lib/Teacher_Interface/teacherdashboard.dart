@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:Qr_Attendance/Teacher_Interface/attendance_history.dart';
-import '../service/course_service.dart';
-import '../model/course.dart';
 import '../service/token_service.dart';
 import '../Student_Interface/profile.dart';
 import 'scan_qr.dart';
@@ -15,7 +13,7 @@ class TeacherDashboard extends StatefulWidget {
 
 class _TeacherDashboardState extends State<TeacherDashboard> {
   int currentIndex = 0;
-  List<Course> courses = [];
+  
   String? name;
   String? email;
 
@@ -23,7 +21,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
   void initState() {
     super.initState();
     loadUserData();
-    loadCourses();
+    
   }
 
   void _navigateToTab(int index) {
@@ -32,10 +30,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     });
   }
 
-  Future<void> loadCourses() async {
-    courses = await CourseService.getCourses();
-    setState(() {});
-  }
+  
 
   Future<void> loadUserData() async {
     name = await TokenService.getName();
@@ -55,9 +50,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     return "Good Evening";
   }
 
-  int getTotalStudents(List<Course> courses) {
-    return courses.fold(0, (sum, c) => sum + c.students);
-  }
+  
 
   String getCurrentYear() => DateTime.now().year.toString();
 
@@ -66,7 +59,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final pages = [
-      _homePage(courses, isDark),
+      _homePage(isDark),
       const ScanQrPage(),
       _historyPage(),
       ProfilePage(name: name ?? "Loading...", email: email ?? "Loading..."),
@@ -127,7 +120,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
     );
   }
 
-  Widget _homePage(List<Course> courses, bool isDark) {
+  Widget _homePage(bool isDark) {
     return SingleChildScrollView(
     padding: const EdgeInsets.fromLTRB(16, 50, 16, 16),
       child: Column(

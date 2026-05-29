@@ -79,7 +79,7 @@ class _SplashState extends State<Splash> {
               children: [
                 const SizedBox(),
 
-                // CENTER CONTENT
+                
                 Column(
                   children: [
                     Container(

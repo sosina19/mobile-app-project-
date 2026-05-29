@@ -10,11 +10,11 @@ class QrPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String qrData = '{"id":"$id","name":"$name"}';
-    // 1. Check if global Dark Mode is enabled
+    
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      // 2. Dynamic canvas layout matching colors
+    
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       body: LayoutBuilder(
@@ -30,12 +30,12 @@ class QrPage extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    // Student Portal Top Header Card
+                    
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        // Slightly adapts blue shade for dark mode
+                       
                         color: isDark
                             ? const Color(0xFF143252)
                             : const Color(0xFF1E4B7A),
@@ -83,12 +83,12 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Middle Student Info Info Card
+                   
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        // Dark grey card base background or crisp off-white structure
+                       
                         color: isDark
                             ? Colors.grey[900]
                             : const Color.fromARGB(255, 250, 251, 252),
@@ -161,11 +161,11 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // QR Code Container Box
+                   
                     Container(
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                        // Keep this background block white so physical scanners can see it cleanly!
+                     
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: const [
@@ -176,7 +176,7 @@ class QrPage extends StatelessWidget {
                         data: qrData,
                         size: 200,
                         backgroundColor: Colors.white,
-                        // Force the actual lines/modules of the QR code to stay dark black
+                       
                         eyeStyle: const QrEyeStyle(
                           eyeShape: QrEyeShape.square,
                           color: Colors.black,
@@ -190,7 +190,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    // Ready Badge UI Indicator component
+                
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -219,7 +219,7 @@ class QrPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    // Dynamic Bottom Guide Text
+                    
                     Text(
                       "Hold your device steady in front of the scanner for instant attendance verification",
                       textAlign: TextAlign.center,

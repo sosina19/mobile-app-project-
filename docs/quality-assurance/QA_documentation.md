@@ -12,10 +12,9 @@ Through systematic testing and validation, the QA team will identify defects, ve
 
 The QA process will focus on testing all major functional components of the Smart Attendance Application, including:
 
-- User registration and authentication using **username and password**
+- User registration and authentication using **email and password**
 - QR code generation for students
 - QR code scanning for attendance recording
-- Course creation and course management
 - Attendance recording and monitoring
 - Attendance history viewing
 - User interface consistency and usability
@@ -29,7 +28,7 @@ The main objectives of the QA activities are:
 - To ensure that the application meets all **functional requirements**
 - To verify that attendance records are **accurately stored and retrieved**
 - To confirm that **QR code scanning functionality operates correctly**
-- To validate that user authentication using **username and password** functions securely
+- To validate that user authentication using **email and password** functions securely
 - To ensure the application provides a **consistent and user-friendly interface**
 - To detect and report defects during early development stages
 
@@ -61,7 +60,7 @@ Database testing verifies that user information, course data, and attendance rec
 
 Authentication Testing:
 
-Authentication testing ensures that only authorized users can access the system through valid **username and password credentials**.
+Authentication testing ensures that only authorized users can access the system through valid **email and password credentials**.
 
 Regression Testing
 
@@ -81,7 +80,7 @@ Regression testing is conducted after system updates or modifications to ensure 
 
 | Test ID | Test Description                         | Test Steps                                | Expected Result                        |
 | ------- | ---------------------------------------- | ----------------------------------------- | -------------------------------------- |
-| TC04    | Login with correct username and password | Enter valid credentials and submit        | User successfully logs into the system |
+| TC04    | Login with correct email and password    | Enter valid credentials and submit        | User successfully logs into the system |
 | TC05    | Login with incorrect password            | Enter correct username but wrong password | System displays authentication error   |
 | TC06    | Login with non-existent user             | Enter username not registered in system   | Access denied and error displayed      |
 
@@ -93,14 +92,8 @@ Regression testing is conducted after system updates or modifications to ensure 
 | TC08    | Scan same QR code twice | Teacher scans the same student twice             | System prevents duplicate attendance |
 | TC09    | Student not scanned     | Attendance session ends without scanning student | Student marked as Absent             |
 
-### 3.4 Course Management Testing
 
-| Test ID | Test Description  | Test Steps                        | Expected Result               |
-| ------- | ----------------- | --------------------------------- | ----------------------------- |
-| TC10    | Create new course | Enter course name, code, semester | Course successfully added     |
-| TC11    | View course list  | Navigate to course list page      | All created courses displayed |
-
-### 3.5 Attendance History Testing
+### 3.4 Attendance History Testing
 
 | Test ID | Test Description           | Test Steps                            | Expected Result                      |
 | ------- | -------------------------- | ------------------------------------- | ------------------------------------ |
